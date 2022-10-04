@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lblName"
+        android:layout_width="310dp"
+        android:layout_height="122dp"
+        android:text="Name:"
+        android:textSize="50"
+        tools:layout_editor_absoluteX="34dp"
+        tools:layout_editor_absoluteY="68dp" />
+
+    <ImageButton
+        android:id="@+id/pauseButton"
+        android:layout_width="130dp"
+        android:layout_height="82dp"
+        app:srcCompat="@android:drawable/ic_media_pause"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="590dp"
+        tools:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/recordButton"
+        android:layout_width="128dp"
+        android:layout_height="80dp"
+        app:srcCompat="@android:drawable/ic_notification_overlay"
+        tools:layout_editor_absoluteX="155dp"
+        tools:layout_editor_absoluteY="592dp" />
+
+    <ImageButton
+        android:id="@+id/stopButton"
+        android:layout_width="118dp"
+        android:layout_height="80dp"
+        app:srcCompat="@drawable/stop_button"
+        tools:layout_editor_absoluteX="295dp"
+        tools:layout_editor_absoluteY="592dp"
+        tools:visibility="invisible" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="189dp"
+        tools:layout_editor_absoluteY="278dp" />
+
+    <TextView
+        android:id="@+id/lblTimer"
+        android:layout_width="316dp"
+        android:layout_height="148dp"
+        android:text="timer"
+        android:textSize="30"
+        tools:layout_editor_absoluteX="28dp"
+        tools:layout_editor_absoluteY="252dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
