@@ -35,12 +35,12 @@
         android:layout_width="413dp"
         android:layout_height="672dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="0dp">
+        tools:layout_editor_absoluteX="6dp"
+        tools:layout_editor_absoluteY="6dp">
 
         <ImageView
             android:id="@+id/playlistCover"
-            android:layout_width="290dp"
+            android:layout_width="420dp"
             android:layout_height="100dp"
             android:layout_weight="0.25"
             android:scaleType="fitStart"
@@ -53,14 +53,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/playlistTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="Playlist name" />
-
         </LinearLayout>
+        <TextView
+            android:id="@+id/playlistTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Playlist name" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
