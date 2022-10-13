@@ -10,7 +10,7 @@
         android:layout_width="310dp"
         android:layout_height="122dp"
         android:text="Name:"
-        android:textSize="50"
+        android:textSize="50dp"
         tools:layout_editor_absoluteX="34dp"
         tools:layout_editor_absoluteY="68dp" />
 
@@ -51,7 +51,7 @@
         android:layout_width="316dp"
         android:layout_height="148dp"
         android:text="timer"
-        android:textSize="30"
+        android:textSize="30dp"
         tools:layout_editor_absoluteX="28dp"
         tools:layout_editor_absoluteY="252dp" />
 
