@@ -3,12 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/activity_main.xml" value="0.20153985507246377" />
-        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/list_item.xml" value="0.22826086956521738" />
-        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/playlist.xml" value="0.22826086956521738" />
-        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/record.xml" value="0.20153985507246377" />
-        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/record_layout.xml" value="0.20153985507246377" />
         <entry key="..\:/UNB/CS2063/TeamProject/Karaoke-App-Tech-Gang/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_playlist_list_view.xml" value="0.24947916666666667" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.19610507246376813" />
+        <entry key="app/src/main/res/layout/playlist.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/record.xml" value="0.19610507246376813" />
       </map>
     </option>
   </component>
