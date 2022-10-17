@@ -67,6 +67,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/songList"
+            android:layout_width="match_parent"
+            android:layout_height="420dp" />
+        <!--
         <ListView
             android:layout_width="match_parent"
             android:layout_height="333dp"
@@ -74,6 +79,7 @@
             tools:listitem="@layout/list_item">
 
         </ListView>
+        !-->
 
     </LinearLayout>
 
