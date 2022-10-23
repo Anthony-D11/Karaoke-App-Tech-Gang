@@ -1,0 +1,48 @@
+{
+  "songs":[
+    {
+      "songId":"1",
+      "songName": "Baby",
+      "authorName": "Justin Bieber, Ashley",
+      "duration": "00:03:40",
+      "avatar": "@tools:sample/avatars",
+      "source": "ABC"
+    },
+    {
+      "songId":"2",
+      "songName": "Attention",
+      "authorName": "Charlie Puth, Anthony",
+      "duration": "00:02:40",
+      "avatar": "@tools:sample/avatars",
+      "source": "ABC"
+    },
+    {
+      "songId":"3",
+      "songName": "Shiver",
+      "authorName": "Ed Sheeran, Mellisa",
+      "duration": "00:03:25",
+      "avatar": "@tools:sample/avatars",
+      "source": "ABC"
+    }
+  ],
+  "playlists": [
+    {
+      "playlistId": "1",
+      "playlistName": "Trending",
+      "songList": ["2", "3"],
+      "avatar": "@tools:sample/avatars"
+    },
+    {
+      "playlistId": "2",
+      "playlistName": "Top Billboard",
+      "songList": ["1", "3"],
+      "avatar": "@tools:sample/avatars"
+    },
+    {
+      "playlistId": "3",
+      "playlistName": "Favourite",
+      "songList": ["2", "1"],
+      "avatar": "@tools:sample/avatars"
+    }
+  ]
+}
