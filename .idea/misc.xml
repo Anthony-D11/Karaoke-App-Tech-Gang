@@ -3,6 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/activity_main.xml" value="0.35859269282814615" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/activity_playlist_list_view.xml" value="0.1" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/add_playlist.xml" value="0.1" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/add_songs.xml" value="0.1" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/playlist.xml" value="0.1" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/playlist_object.xml" value="0.2" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/record.xml" value="0.11764705882352941" />
+        <entry key="..\:/OneDrive/Documents/UNB/third year/2063/groupProject/git/Karaoke-App-Tech-Gang/app/src/main/res/layout/song_item.xml" value="0.55" />
         <entry key="..\:/UNB/CS2063/TeamProject/Karaoke-App-Tech-Gang/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_playlist_list_view.xml" value="0.24947916666666667" />

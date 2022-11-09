@@ -14,6 +14,7 @@ import kotlin.collections.ArrayList
 class JsonUtils(context: Context) {
     private lateinit var songList: ArrayList<Song>
     private lateinit var playlistList: ArrayList<Playlist>
+    lateinit var playlist :Playlist
     init {
         songList = ArrayList<Song>()
         playlistList = ArrayList<Playlist>()
@@ -22,18 +23,31 @@ class JsonUtils(context: Context) {
         //val contextWrapper = ContextWrapper(context)
         //val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
         //val file: File  = File(music, "Perfect.")
-        val song = Song("0", "7 Years", "Lukas Graham", "@tools:sample/avatars",  "ABC")
-        songList.add(song)
-        val playlist = Playlist("0", "Trending", "@tools:sample/avatars")
-        playlist.addSong(song)
-        playlistList.add(playlist)
+        addPlaylist("0", "Trending yay!")
+        addSongs("0", "7 years!", "Lukas Graham")
+
     }
+
+    fun addPlaylist(playListID : String, playListName : String ){
+        playlist = Playlist(playListID, playListName, "@tools:sample/avatars")
+        playlistList.add(playlist)
+
+    }
+
+    fun addSongs (songID :String, songName: String, authorName : String, ){
+        val song = Song(songID, songName, authorName, "@tools:sample/avatars",  "ABC")
+        songList.add(song)
+        playlist.addSong(song)
+
+
+    }
+
 
     fun getPlaylist(context: Context, playlistId: String?): ArrayList<Song> {
         return playlistList[playlistId!!.toInt()].getSongList()
     }
     private fun getSong(context: Context, songId: String): Song {
-        return songList[songId!!.toInt()]
+        return songList[songId.toInt()]
     }
 
     private fun loadJSONFromAssets(context: Context): String? {

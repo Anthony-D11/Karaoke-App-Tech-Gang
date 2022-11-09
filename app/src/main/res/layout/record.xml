@@ -11,48 +11,73 @@
         android:layout_height="122dp"
         android:text="Name:"
         android:textSize="50dp"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="68dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.131" />
 
     <ImageButton
         android:id="@+id/pauseButton"
         android:layout_width="130dp"
         android:layout_height="82dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.938"
         app:srcCompat="@android:drawable/ic_media_pause"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="590dp"
         tools:visibility="invisible" />
 
     <ImageButton
         android:id="@+id/recordButton"
         android:layout_width="128dp"
         android:layout_height="80dp"
-        app:srcCompat="@android:drawable/ic_notification_overlay"
-        tools:layout_editor_absoluteX="155dp"
-        tools:layout_editor_absoluteY="592dp" />
+        android:contentDescription="@android:string/untitled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.935"
+        app:srcCompat="@android:drawable/ic_notification_overlay" />
 
     <ImageButton
         android:id="@+id/stopButton"
         android:layout_width="118dp"
         android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.938"
         app:srcCompat="@drawable/stop_button"
-        tools:layout_editor_absoluteX="295dp"
-        tools:layout_editor_absoluteY="592dp"
         tools:visibility="invisible" />
 
     <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="189dp"
-        tools:layout_editor_absoluteY="278dp" />
+        android:id="@+id/radioGroup"
+        android:layout_width="101dp"
+        android:layout_height="88dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.947" />
 
     <TextView
         android:id="@+id/lblTimer"
         android:layout_width="316dp"
         android:layout_height="148dp"
+        android:layout_marginStart="76dp"
         android:text="timer"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="252dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.456" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
