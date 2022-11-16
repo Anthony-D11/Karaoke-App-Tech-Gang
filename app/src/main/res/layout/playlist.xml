@@ -22,7 +22,8 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:layout_editor_absoluteX="0dp"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                tools:srcCompat="@tools:sample/backgrounds/scenic"
+                tools:ignore="MissingConstraints" />
 
             <ImageView
                 android:id="@+id/playlistAvatar"

@@ -29,6 +29,17 @@
             android:name=".PlaylistActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity
+            android:name=".AddSong"
+            android:parentActivityName=".PlaylistActivity">
+        </activity>
+
+        <activity
+            android:name=".AddPlaylist"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
+
     </application>
 
 </manifest>

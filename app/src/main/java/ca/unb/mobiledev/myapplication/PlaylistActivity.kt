@@ -67,8 +67,10 @@ class PlaylistActivity: AppCompatActivity() {
         var playlistId: String? = intent.getStringExtra(Intent.EXTRA_INDEX)
         mediaPlayer = MediaPlayer()
         addSongsButton.setOnClickListener{
-            startActivity(intent)
-            Log.i("PlaylistActivity", "addSongsButton Called")
+                Log.i("PlaylistActivity", "addSongsButtons Called")
+                val intents = Intent(this@PlaylistActivity, AddSong::class.java)
+                startActivity(intents)
+
         }
         var utils = JsonUtils(this)
         var songList: ArrayList<Song> = utils.getPlaylist(this, playlistId)
