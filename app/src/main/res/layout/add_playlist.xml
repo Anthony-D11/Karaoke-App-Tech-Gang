@@ -54,7 +54,7 @@
         android:id="@+id/deployBnt"
         android:layout_width="149dp"
         android:layout_height="74dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="444dp"
         android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/deployBnt"

@@ -38,7 +38,10 @@
             android:name=".AddPlaylist"
             android:parentActivityName=".MainActivity">
         </activity>
-
+        <activity
+            android:name=".RecordActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
 
     </application>
 
