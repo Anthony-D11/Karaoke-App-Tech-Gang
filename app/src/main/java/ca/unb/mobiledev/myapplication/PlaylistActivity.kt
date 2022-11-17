@@ -1,14 +1,10 @@
 package ca.unb.mobiledev.myapplication
 
-import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.media.Image
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Environment
-import android.os.storage.StorageManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View

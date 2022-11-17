@@ -49,98 +49,15 @@ class MainActivity : AppCompatActivity() {
 
         val microphoneButton = findViewById<FloatingActionButton>(R.id.microphoneButton)
         microphoneButton.setOnClickListener {
-            if (checkRecordingPermission()) {
-                if (!isRecording) startRecording()
-                else stopRecording()
-            }
-            else {
-                requestRecordingPermission()
-            }
+            val intents = Intent(this@MainActivity, RecordActivity::class.java)
+            startActivity(intents)
         }
-
         val addPlayListButton = findViewById<FloatingActionButton>(R.id.addPlaylistButton)
         addPlayListButton.setOnClickListener {
-            Log.i("MainActivity", "addPlaylistButton Called")
             val intents = Intent(this@MainActivity, AddPlaylist::class.java)
             startActivity(intents)
         }
 
-    }
-
-    private fun stopRecording() {
-        Executors.newSingleThreadExecutor().execute(object: Runnable{
-            override fun run() {
-                mediaRecorder!!.stop()
-                mediaRecorder!! .release()
-                mediaRecorder = null
-
-                runOnUiThread(object: Runnable{
-                    override fun run() {
-                        microphoneButton.setImageResource(R.drawable.microphone)
-                        handler.removeCallbacksAndMessages(null)
-                    }
-                })
-            }
-        })
-
-    }
-
-    private fun startRecording() {
-        isRecording = true
-        Executors.newSingleThreadExecutor().execute(object: Runnable {
-            override fun run() {
-                mediaRecorder = MediaRecorder()
-                mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-                mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                mediaRecorder!!.setOutputFile(getRecordingPath())
-                mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                val path = getRecordingPath()
-                mediaRecorder!!.prepare()
-                mediaRecorder!!.start()
-                runOnUiThread(object: Runnable {
-                    override fun run() {
-                        microphoneButton.setImageResource(R.drawable.stop_button)
-                    }
-
-                })
-            }
-
-        })
-    }
-    private fun requestRecordingPermission() {
-        ActivityCompat.requestPermissions(this@MainActivity, arrayOf<String>(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION_CODE)
-    }
-    private fun checkRecordingPermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
-            requestRecordingPermission()
-            return false
-        }
-        return true
-    }
-    private fun getRecordingPath(): String {
-        val contextWrapper = ContextWrapper(applicationContext)
-        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/General")
-        val musicFile = File(music, "ABC" + ".mp3")
-        return musicFile.path
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_AUDIO_PERMISSION_CODE) {
-            if (grantResults.size > 0) {
-                var permissionToRecord: Boolean = grantResults[0] == PackageManager.PERMISSION_GRANTED
-                if (permissionToRecord) {
-                    Toast.makeText(applicationContext, "Permission Granted", Toast.LENGTH_SHORT).show()
-                }
-                else {
-                    Toast.makeText(applicationContext, "Permission Denied", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-        }
     }
     class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity):RecyclerView.Adapter<PlaylistAdapter.ViewHolder>(){
         class ViewHolder: RecyclerView.ViewHolder {
