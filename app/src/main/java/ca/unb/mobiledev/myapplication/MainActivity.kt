@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         var utils = JsonUtils(this)
 
+
         var playlistList = utils.getPlaylistList()
         var recyclerView = findViewById<RecyclerView>(R.id.playlistList)
         var adapter = PlaylistAdapter(playlistList, this)
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.playlistName.text = playlistList[position].getName()
-            holder.songNumbers.text = playlistList[position].getSongList().size.toString()
+            holder.songNumbers.text = playlistList[position].getSongList()?.size.toString()
             holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {

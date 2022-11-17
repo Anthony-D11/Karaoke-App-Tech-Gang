@@ -73,11 +73,11 @@ class PlaylistActivity: AppCompatActivity() {
 
         }
         var utils = JsonUtils(this)
-        var songList: ArrayList<Song> = utils.getPlaylist(this, playlistId)
+        var songList: ArrayList<Song>? = utils.getPlaylist(this, playlistId)
         playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
         var recyclerView = findViewById<RecyclerView>(R.id.songList)
-        var adapter = SongAdapter(songList, mediaPlayer, this@PlaylistActivity)
+        var adapter = songList?.let { SongAdapter(it, mediaPlayer, this@PlaylistActivity) }
         recyclerView.adapter = adapter
 
         setupFilePicker()

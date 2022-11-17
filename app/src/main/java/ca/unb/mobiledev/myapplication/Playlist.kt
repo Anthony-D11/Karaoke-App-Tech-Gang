@@ -1,32 +1,55 @@
 package ca.unb.mobiledev.myapplication
 
-class Playlist(id: String, name: String, avatar: String) {
-    private var id: String
-    private var name: String
-    private var avatar: String
-    private var songList: ArrayList<Song>
-    val playlistDetail: String
-        get() = "$name - $avatar - ${songList.size}"
-    init {
-        this.id = id
-        this.name = name
-        this.avatar = avatar
-        this.songList = ArrayList()
-    }
+class Playlist(
+    private var id: String?,
+    private var name: String?,
+    private var avatar: String?,
+    private var songList: ArrayList<Song>?,
+   // val playlistDetail: String?,
+
+    ) {
+    val title: String
+        get() = "$name - $avatar - ${songList?.size}"
+
     fun addSong(song: Song) {
-        songList.add(song)
+        songList?.add(song)
     }
-    fun getName(): String {
+
+    fun getName(): String? {
         return name
     }
-    fun getId(): String {
+
+    fun getId(): String? {
         return id
     }
-    fun getAvatar(): String {
+
+    fun getAvatar(): String? {
         return avatar
     }
-    fun getSongList(): ArrayList<Song> {
+
+    fun getSongList(): ArrayList<Song>? {
         return songList
     }
 
+    fun addPlaylist(playlistList: ArrayList<Playlist>) {
+       // playlistList?.add(playList)
+    }
+
+
+    data class Builder(
+        var id: String? = null,
+        var name: String? = null,
+        var avatar: String? = null,
+        var songList: ArrayList<Song>? = null,
+    ) {
+
+        fun id(id: String) = apply { this.id = id }
+        fun name(name: String) = apply { this.name = name }
+        fun avatar(avatar: String?) = apply { this.avatar = avatar }
+        fun songList(songList: ArrayList<Song>) = apply { this.songList = songList }
+
+        fun build() = Playlist(id, name, avatar, songList)
+
+
+    }
 }

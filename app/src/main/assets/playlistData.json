@@ -1,0 +1,22 @@
+{
+  "playlists": [
+    {
+      "playlistId": "1",
+      "playlistName": "Trending",
+      "songList": ["2", "3"],
+      "avatar": "@tools:sample/avatars"
+    },
+    {
+      "playlistId": "2",
+      "playlistName": "Top Billboard",
+      "songList": ["1", "3"],
+      "avatar": "@tools:sample/avatars"
+    },
+    {
+      "playlistId": "3",
+      "playlistName": "Favourite",
+      "songList": ["2", "1"],
+      "avatar": "@tools:sample/avatars"
+    }
+  ]
+}
