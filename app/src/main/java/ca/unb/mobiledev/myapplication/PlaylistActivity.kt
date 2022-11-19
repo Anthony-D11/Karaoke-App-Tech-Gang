@@ -89,7 +89,7 @@ class PlaylistActivity: AppCompatActivity() {
         playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
         val recyclerView = findViewById<RecyclerView>(R.id.songList)
-        val adapter = SongAdapter(songList, this, "playing")
+        var adapter = songList?.let { SongAdapter(it, this, "playing") }
         recyclerView.adapter = adapter
         mediaPlayer = MediaPlayer()
         setupFilePicker()
