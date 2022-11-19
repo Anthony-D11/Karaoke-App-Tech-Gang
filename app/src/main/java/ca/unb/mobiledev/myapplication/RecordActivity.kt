@@ -4,20 +4,23 @@ import android.Manifest
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Environment
 import android.os.Handler
 import android.util.Log
-import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.File
-import java.sql.Time
-import java.util.*
+import java.net.URI
 import java.util.concurrent.Executors
 
 class RecordActivity: AppCompatActivity() {
@@ -27,6 +30,8 @@ class RecordActivity: AppCompatActivity() {
     lateinit var displayTimer: TextView
     lateinit var timer: CountDownTimer
     lateinit var chooseSongButton: Button
+    lateinit var chooseLyricsButton: Button
+    lateinit var lyricsView: TextView
 
     private var maximumSeconds: Long = 10000
     private var intervalSeconds: Long = 1
@@ -34,15 +39,26 @@ class RecordActivity: AppCompatActivity() {
     private var isRecording = false
     private var mediaRecorder: MediaRecorder? = null
     private var handler: Handler = Handler()
-
-
+    private var mediaPlayer = MediaPlayer()
+    private var songPlaying: String = ""
+    private var filePicker: ActivityResultLauncher<Intent>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.record);
 
+        val extras = intent
+
+        if (extras.getStringExtra("songName") != null) {
+            songPlaying = extras.getStringExtra("songName").toString()
+        }
+
         displayTimer = findViewById(R.id.lblTimer)
         chooseSongButton = findViewById(R.id.chooseSongButton)
+        chooseLyricsButton = findViewById(R.id.chooseLyricsButton)
+
+        lyricsView = findViewById(R.id.lyricsTextView)
+
         recordButton = findViewById(R.id.recordButton)
 
         setupTimer()
@@ -50,6 +66,9 @@ class RecordActivity: AppCompatActivity() {
         recordButton.setOnClickListener {
             if (!isRecording) {
                 if (checkRecordingPermission()) {
+                    if (songPlaying != "") {
+                        mediaPlayer.start()
+                    }
                     startRecording()
                 } else {
                     requestRecordingPermission()
@@ -57,32 +76,21 @@ class RecordActivity: AppCompatActivity() {
             }
             else {
                 stopRecording()
+                if (songPlaying != "") {
+                    mediaPlayer.stop()
+                    songPlaying = ""
+                }
             }
         }
         chooseSongButton.setOnClickListener {
-
+            chooseSong()
         }
-    }
+        chooseLyricsButton.setOnClickListener {
+            chooseLyrics()
+        }
+        if (songPlaying != "") prepareSong(songPlaying, extras.getStringExtra("dirSource")!!, extras.getStringExtra("fileName")!!)
+        setupFilePicker()
 
-    private fun stopRecording() {
-        isRecording = false
-        timer.cancel()
-        displayTimer.text = "00:00:00"
-        Executors.newSingleThreadExecutor().execute(object: Runnable{
-            override fun run() {
-                mediaRecorder!!.stop()
-                mediaRecorder!!.release()
-                mediaRecorder = null
-
-                runOnUiThread(object: Runnable{
-                    override fun run() {
-                        handler.removeCallbacksAndMessages(null)
-                        recordButton.setBackgroundResource(R.drawable.start_recording)
-                    }
-                })
-            }
-        })
-        Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
     }
     private fun startRecording() {
         isRecording = true
@@ -107,6 +115,49 @@ class RecordActivity: AppCompatActivity() {
 
         })
     }
+    private fun stopRecording() {
+        isRecording = false
+        timer.cancel()
+        displayTimer.text = "00:00:00"
+        chooseSongButton.text = "Choose Song"
+        chooseLyricsButton.text = "Choose Lyrics"
+        lyricsView.text = ""
+        Executors.newSingleThreadExecutor().execute(object: Runnable{
+            override fun run() {
+                mediaRecorder!!.stop()
+                mediaRecorder!!.release()
+                mediaRecorder = null
+
+                runOnUiThread(object: Runnable{
+                    override fun run() {
+                        handler.removeCallbacksAndMessages(null)
+                        recordButton.setBackgroundResource(R.drawable.start_recording)
+                    }
+                })
+            }
+        })
+        Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
+    }
+    private fun getRecordingPath(): String {
+        val contextWrapper = ContextWrapper(applicationContext)
+        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/General")
+        val musicFile = File(music, "Test" + ".mp3")
+        return musicFile.path
+    }
+
+    fun prepareSong(song: String, dirSource: String, fileName: String) {
+        chooseSongButton.text = song
+        songPlaying = song
+        mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
+        mediaPlayer.prepare()
+    }
+    private fun getMusicPath(dirSource: String, fileName: String): String {
+        val contextWrapper = ContextWrapper(applicationContext)
+        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/$dirSource")
+        val musicFile = File(music, fileName)
+        return musicFile.path
+    }
+
     private fun setupTimer() {
         timer = object: CountDownTimer(maximumSeconds * 1000, intervalSeconds * 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -135,6 +186,52 @@ class RecordActivity: AppCompatActivity() {
 
         }
     }
+
+    private fun chooseSong() {
+        var intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("audio/*")
+        intent = Intent.createChooser(intent, "Choose a music file")
+        filePicker!!.launch(intent)
+    }
+
+    private fun chooseLyrics() {
+        var intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("text/*")
+        intent = Intent.createChooser(intent, "Choose a text file")
+        filePicker!!.launch(intent)
+    }
+
+    private fun setupFilePicker() {
+        filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                val add = data!!.data
+                if (add.toString().takeLast(3) == "mp3") {
+                    mediaPlayer.setDataSource(this, data!!.data!!)
+                    mediaPlayer.prepare()
+                    songPlaying = add.toString()
+                    chooseSongButton.text = add!!.path!!.substring(add!!.path!!.lastIndexOf('/') + 1)
+
+                }
+                else if (add.toString().takeLast(3) == "txt") {
+                    lyricsView.text = getStringFromUri(add!!)
+                    chooseLyricsButton.text = add!!.path!!.substring(add!!.path!!.lastIndexOf('/') + 1)
+                }
+
+
+            }
+        }
+    }
+    private fun getStringFromUri(uri: Uri): String {
+        var path = uri.path
+        path = path!!.substring(path.indexOf(':') + 1)
+        path = Environment.getExternalStorageDirectory().path + "/" + path
+        val bufferedReader = File(path).bufferedReader()
+        val result = bufferedReader.use { it.readText() }
+        return result
+    }
+
     private fun requestRecordingPermission() {
         ActivityCompat.requestPermissions(this, arrayOf<String>(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO_PERMISSION_CODE)
     }
@@ -145,12 +242,7 @@ class RecordActivity: AppCompatActivity() {
         }
         return true
     }
-    private fun getRecordingPath(): String {
-        val contextWrapper = ContextWrapper(applicationContext)
-        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/General")
-        val musicFile = File(music, "ABC" + ".mp3")
-        return musicFile.path
-    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

@@ -31,7 +31,6 @@ class JsonUtils(context: Context) {
     fun addPlaylist(playListID : String, playListName : String ){
         playlist = Playlist(playListID, playListName, "@tools:sample/avatars")
         playlistList.add(playlist)
-
     }
 
     fun addSongs (songID :String, songName: String, authorName : String, ){

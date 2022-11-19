@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar!!.hide()
+        val sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
         var utils = JsonUtils(this)
 
@@ -48,17 +49,18 @@ class MainActivity : AppCompatActivity() {
 
         val microphoneButton = findViewById<FloatingActionButton>(R.id.microphoneButton)
         microphoneButton.setOnClickListener {
-            val intents = Intent(this@MainActivity, RecordActivity::class.java)
+            val intents = Intent(this, RecordActivity::class.java)
             startActivity(intents)
         }
         val addPlayListButton = findViewById<FloatingActionButton>(R.id.addPlaylistButton)
         addPlayListButton.setOnClickListener {
-            val intents = Intent(this@MainActivity, AddPlaylist::class.java)
+            val intents = Intent(this, AddPlaylist::class.java)
             startActivity(intents)
         }
 
     }
-    class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity):RecyclerView.Adapter<PlaylistAdapter.ViewHolder>(){
+    class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity)
+        :RecyclerView.Adapter<PlaylistAdapter.ViewHolder>(){
         class ViewHolder: RecyclerView.ViewHolder {
             var playlistName: TextView
             var songNumbers: TextView
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {
-                    putExtra(Intent.EXTRA_INDEX, playlistList[position].getId())
+                    putExtra("playlistId", playlistList[position].getId())
                 }
                 parentActivity.startActivity(intent)
             }
