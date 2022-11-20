@@ -7,11 +7,6 @@
     import android.widget.Button
     import androidx.appcompat.app.AppCompatActivity
     import android.widget.EditText
-    import org.json.JSONException
-    import org.json.JSONObject
-    import java.io.FileWriter
-    import java.io.PrintWriter
-    import java.nio.charset.Charset
     import android.widget.TextView
     import java.io.File
 
@@ -44,14 +39,17 @@
                 //jsonClass.initializeSongList(this.applicationContext)
                 //code below is copied from example code. Replace variables
 
-                    val playlistToAdd: List<Playlist> = listOf(
-                        Playlist("", "bezkoder", )
-                    );
-                    val playlistToAddString: String = playlistToAdd.toString()
+                   // val playlistToAdd: List<Playlist> = listOf(
+                    //    Playlist("", "bezkoder", )
+                   // );
+
+                   // val playlistToAddString: String = playlistToAdd.toString()
                     //val jsonTutsList: String = gson.toJson(tutsList)
-                    File("Data.json").writeText(playlistToAddString)
+
+                   // File("Data.json").writeText(playlistToAddString)
                 //increment id
-                playlistI++
+
+               // playlistI++
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
                 //SONGS
 

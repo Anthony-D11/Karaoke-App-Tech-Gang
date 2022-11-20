@@ -35,7 +35,6 @@ class Playlist(
        // playlistList?.add(playList)
     }
 
-
     data class Builder(
         var id: String? = null,
         var name: String? = null,

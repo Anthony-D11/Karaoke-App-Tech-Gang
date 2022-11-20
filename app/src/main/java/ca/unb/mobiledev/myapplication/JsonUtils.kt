@@ -1,16 +1,11 @@
 package ca.unb.mobiledev.myapplication
 
 import android.content.Context
-import android.content.ContextWrapper
-import android.graphics.Insets.add
-import android.os.Environment
 import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 import java.io.IOException
 import java.io.InputStream
-import java.security.AccessController.getContext
 import java.util.*
 
 class JsonUtils(context: Context) {
@@ -105,7 +100,7 @@ class JsonUtils(context: Context) {
               // this might not work because I need to fix the song playlist
                   //songList.add(songPlaylistShow[i])
                 //songsId  = playlistDetail.getJSONArray("songList")
-               val  playlist = Playlist(playlistID[i], playlistNameShow[i], avatarShow[i], songList)
+               val  playlist = Playlist(playlistID[i], playlistNameShow[i], avatarShow[i], null)
                   // for (i in 0 until songsId.length()) {
                      //  Log.i("JsonUtils", " helping is 1")
             // playlist.addSong(songList[(songsId[i] as Int)])

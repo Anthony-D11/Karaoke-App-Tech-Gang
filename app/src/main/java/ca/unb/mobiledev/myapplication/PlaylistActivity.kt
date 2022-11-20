@@ -47,9 +47,9 @@ class PlaylistActivity: AppCompatActivity() {
         var playlistId: String? = intent.getStringExtra("playlistId")
 
         val utils = JsonUtils(this)
-        val songList: ArrayList<Song> = utils.getPlaylist(this, playlistId)
+        val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
 
-        songPlaying = songList[0]
+        songPlaying = songList?.get(0)
 
         addSongsButton = findViewById(R.id.addSongsButton)
         playButton = findViewById(R.id.playButton)
