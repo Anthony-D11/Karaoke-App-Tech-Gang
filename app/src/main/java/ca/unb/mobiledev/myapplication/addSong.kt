@@ -29,7 +29,7 @@ class AddSong : AppCompatActivity() {
         setContentView(R.layout.add_songs)
 
 
-        val addSong = findViewById<Button>(R.id.uploadBtn)
+        val addSong = findViewById<Button>(R.id.songUploadBtn)
         addSong.setOnClickListener {
             Log.i("AddSong", "addSongButton Called")
 

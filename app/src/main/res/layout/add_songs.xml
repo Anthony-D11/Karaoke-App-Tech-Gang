@@ -19,8 +19,10 @@
         android:text="@string/song_name"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.615" />
 
     <EditText
         android:id="@+id/editText"
@@ -36,16 +38,18 @@
         android:textColorHint="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.319"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.049"
+        app:layout_constraintVertical_bias="0.152"
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/uploadBtn"
+        android:id="@+id/songUploadBtn"
         android:layout_width="204dp"
         android:layout_height="76dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="392dp"
         android:text="@string/upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -54,10 +58,10 @@
         android:id="@+id/submitBnt"
         android:layout_width="149dp"
         android:layout_height="74dp"
-        android:layout_marginBottom="448dp"
+        android:layout_marginBottom="108dp"
         android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/uploadBtn"
+        app:layout_constraintEnd_toStartOf="@+id/songUploadBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 

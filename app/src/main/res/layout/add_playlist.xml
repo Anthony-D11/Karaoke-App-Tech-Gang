@@ -20,13 +20,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.609" />
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/deployBnt"
+        android:layout_above="@id/playlistSubmitBtn"
         android:layout_centerInParent="true"
         android:autofillHints=""
         android:hint="@android:string/unknownName"
@@ -36,31 +37,34 @@
         android:textColorHint="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.319"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.049"
+        app:layout_constraintVertical_bias="0.111"
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/OkBtn"
+        android:id="@+id/playlistUploadBtn"
         android:layout_width="204dp"
         android:layout_height="76dp"
+        android:layout_marginEnd="104dp"
+        android:layout_marginBottom="340dp"
         android:text="@string/upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/deployBnt"
+        android:id="@+id/playlistSubmitBtn"
         android:layout_width="149dp"
         android:layout_height="74dp"
         android:layout_marginBottom="444dp"
-        android:text="@string/ok"
+    android:text="@string/ok"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deployBnt"
+        app:layout_constraintEnd_toStartOf="@+id/playlistUploadBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="NotSibling" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
