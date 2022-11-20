@@ -42,6 +42,10 @@
             android:name=".RecordActivity"
             android:parentActivityName=".MainActivity">
         </activity>
+        <activity
+            android:name=".SongLibrary"
+            android:parentActivityName=".RecordActivity">
+        </activity>
 
     </application>
 

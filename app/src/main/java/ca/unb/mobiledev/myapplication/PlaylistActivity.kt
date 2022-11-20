@@ -21,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 
 class PlaylistActivity: AppCompatActivity() {
-    lateinit var mediaPlayer: MediaPlayer
     lateinit var addSongsButton: FloatingActionButton
     lateinit var playButton: FloatingActionButton
     lateinit var nextButton: FloatingActionButton
@@ -32,13 +31,26 @@ class PlaylistActivity: AppCompatActivity() {
     lateinit var songName_bb: TextView
     lateinit var authorName_bb: TextView
     lateinit var songAvatar_bb: ImageView
+    lateinit var mediaPlayer: MediaPlayer
 
     private var filePicker: ActivityResultLauncher<Intent>? = null
     private var currentModify = ""
 
+    private var isPlaying: Boolean = false
+    private var songPlaying: Song? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.playlist)
+
+        var intent: Intent = getIntent()
+        var playlistId: String? = intent.getStringExtra("playlistId")
+
+        val utils = JsonUtils(this)
+        val songList: ArrayList<Song> = utils.getPlaylist(this, playlistId)
+
+        songPlaying = songList[0]
+
         addSongsButton = findViewById(R.id.addSongsButton)
         playButton = findViewById(R.id.playButton)
         nextButton = findViewById(R.id.nextButton)
@@ -47,7 +59,6 @@ class PlaylistActivity: AppCompatActivity() {
         songName_bb = findViewById(R.id.songName_bb)
         authorName_bb = findViewById(R.id.authorName_bb)
         songAvatar_bb = findViewById(R.id.songAvatar_bb)
-
         avatar_edit_button = findViewById(R.id.avatar_edit_button)
         background_edit_button = findViewById(R.id.background_edit_button)
 
@@ -59,23 +70,28 @@ class PlaylistActivity: AppCompatActivity() {
             editBackground()
         }
 
-        var intent: Intent = getIntent()
-        var playlistId: String? = intent.getStringExtra(Intent.EXTRA_INDEX)
-        mediaPlayer = MediaPlayer()
-        addSongsButton.setOnClickListener{
-                Log.i("PlaylistActivity", "addSongsButtons Called")
-                val intents = Intent(this@PlaylistActivity, AddSong::class.java)
+       addSongsButton.setOnClickListener{
+                val intents = Intent(this, AddSong::class.java)
                 startActivity(intents)
-
         }
-        var utils = JsonUtils(this)
-        var songList: ArrayList<Song>? = utils.getPlaylist(this, playlistId)
+        playButton.setOnClickListener {
+            if (isPlaying) {
+                playButton.setImageResource(R.drawable.play_button)
+                mediaPlayer.pause()
+                isPlaying = false
+            }
+            else {
+                playSong(songPlaying!!,"General", "ABC.mp3")
+                isPlaying = true
+            }
+        }
+
         playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
-        var recyclerView = findViewById<RecyclerView>(R.id.songList)
-        var adapter = songList?.let { SongAdapter(it, mediaPlayer, this@PlaylistActivity) }
+        val recyclerView = findViewById<RecyclerView>(R.id.songList)
+        var adapter = songList?.let { SongAdapter(it, this, "playing") }
         recyclerView.adapter = adapter
-
+        mediaPlayer = MediaPlayer()
         setupFilePicker()
     }
 
@@ -103,7 +119,6 @@ class PlaylistActivity: AppCompatActivity() {
                 val data = result.data
                 val uri = data!!.data
                 if (currentModify == "avatar") {
-                    Log.i("Hello", "Hello")
                     playlistAvatar.setImageURI(uri)
                 }
                 if (currentModify == "background") {
@@ -112,10 +127,26 @@ class PlaylistActivity: AppCompatActivity() {
             }
         }
     }
-    class SongAdapter(private val songList: ArrayList<Song>, private val mediaPlayer: MediaPlayer, private val parentActivity: PlaylistActivity)
+
+    fun playSong(song: Song, dirSource: String, fileName: String) {
+        isPlaying = true
+        songAvatar_bb.setBackgroundResource(R.drawable.ic_launcher_background)
+        songName_bb.text = song.name
+        authorName_bb.text = song.authorName
+        playButton.setImageResource(R.drawable.stop_button)
+        mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
+        mediaPlayer.prepare()
+        mediaPlayer.start()
+
+    }
+    private fun getMusicPath(dirSource: String, fileName: String): String {
+        val contextWrapper = ContextWrapper(applicationContext)
+        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/$dirSource")
+        val musicFile = File(music, fileName)
+        return musicFile.path
+    }
+    class SongAdapter(private val songList: ArrayList<Song>, private val parentActivity: AppCompatActivity, private val mode: String)
         :RecyclerView.Adapter<SongAdapter.ViewHolder>(){
-        private var isPlaying: Boolean = false
-        private var songPlaying: String = ""
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
             val songName_list: TextView
             val authorName_list: TextView
@@ -126,7 +157,6 @@ class PlaylistActivity: AppCompatActivity() {
                 authorName_list = view.findViewById(R.id.authorName_list)
                 songDuration_list = view.findViewById(R.id.songDuration_list)
                 songAvatar_list = view.findViewById(R.id.songAvatar_list)
-
             }
         }
 
@@ -142,45 +172,12 @@ class PlaylistActivity: AppCompatActivity() {
             holder.songDuration_list.text = songList[position].duration
             holder.songAvatar_list.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
-                if (!isPlaying) playSong(holder, position,"General", "ABC.mp3")
+                (parentActivity as PlaylistActivity).playSong(songList[position],"General", "ABC.mp3")
             }
-            parentActivity.playButton.setOnClickListener {
-                if (isPlaying) {
-                    parentActivity.playButton.setImageResource(R.drawable.play_button)
-                    mediaPlayer.pause()
-                    isPlaying = false
-                }
-                else {
-                    if (songPlaying != "") {
-                        parentActivity.playButton.setImageResource(R.drawable.stop_button)
-                        mediaPlayer.start()
-                    }
-                    else playSong(holder, position,"General", "ABC.mp3")
-                    isPlaying = true
-                }
-            }
-        }
-
-        private fun playSong(holder: ViewHolder, position: Int, dirSource: String, fileName: String) {
-            isPlaying = true
-            songPlaying = fileName
-            parentActivity.songAvatar_bb.setBackgroundResource(R.drawable.ic_launcher_background)
-            parentActivity.songName_bb.text = songList[position].name
-            parentActivity.authorName_bb.text = songList[position].authorName
-            parentActivity.playButton.setImageResource(R.drawable.stop_button)
-            mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
-            mediaPlayer.prepare()
-            mediaPlayer.start()
-
-        }
-        private fun getMusicPath(dirSource: String, fileName: String): String {
-            val contextWrapper = ContextWrapper(parentActivity.applicationContext)
-            val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/$dirSource")
-            val musicFile = File(music, fileName)
-            return musicFile.path
         }
         override fun getItemCount(): Int {
             return songList.size
         }
     }
+
 }
