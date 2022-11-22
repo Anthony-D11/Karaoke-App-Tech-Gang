@@ -80,12 +80,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.playlistName.text = playlistList[position].getName()
-            holder.songNumbers.text = playlistList[position].getSongList()?.size.toString()
+            holder.playlistName.text = playlistList[position].name
+            holder.songNumbers.text = playlistList[position].songList?.size.toString()
             holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {
-                    putExtra("playlistId", playlistList[position].getId())
+                    putExtra("playlistId", playlistList[position].id)
                 }
                 parentActivity.startActivity(intent)
             }
