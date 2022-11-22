@@ -1,28 +1,44 @@
 
     package ca.unb.mobiledev.myapplication
 
+    import android.R.attr.data
+    import android.content.Intent
     import android.os.Bundle
     import android.util.Log
     import android.view.View
     import android.widget.Button
-    import androidx.appcompat.app.AppCompatActivity
     import android.widget.EditText
+    import android.widget.ImageView
     import android.widget.TextView
+    import androidx.activity.result.ActivityResult
+    import androidx.activity.result.ActivityResultLauncher
+    import androidx.activity.result.contract.ActivityResultContracts
+    import androidx.appcompat.app.AppCompatActivity
     import java.io.File
+    import java.io.InputStream
+
 
     class AddPlaylist : AppCompatActivity() {
-
+        private var filePicker: ActivityResultLauncher<Intent>? = null
+        private var currentModify = ""
+        lateinit var playlistAvatar: ImageView
         lateinit var editText: EditText
         lateinit var nameOfPlaylist: String
         lateinit var addPlaylistButton : View
         //lateinit var artist: String
         lateinit var textView: TextView
         lateinit var jsonClass: JsonUtils
+        //private lateinit var imageUri: EditText
       // lateinit var songAdapterClass: PlaylistActivity.SongAdapter
 
         override fun onCreate(savedInstanceState: Bundle?) {
+
             super.onCreate(savedInstanceState)
             setContentView(R.layout.add_playlist)
+
+            //playlistAvatar = findViewById(R.id.playlistAvatar)
+
+            //imageUri = findViewById(R.id.playlistName)
            // Log.i("addSong", "test")
             //cut off
             //addPlaylistButton = findViewById(R.id.addSongsButton)
@@ -32,21 +48,15 @@
             //add a new playlist, add it to song list in json util
             //change xml files
             //file picker in PlaylistActivity
-            val addPlaylist = findViewById<Button>(R.id.playlistSubmitBtn)//submitting
-            addPlaylist.setOnClickListener {
-                Log.i("addplaylist", "addPlaylist Called")
+
+            val submitPlaylist = findViewById<Button>(R.id.playlistSubmitBtn)//CLICK THIS BUTTON TO SUBMIT INFO
+            submitPlaylist.setOnClickListener {
+               //Log.i("submitplaylist", "submitPlaylist Called")
                 //create new playlist and add it into Data.json file static playlist array
                 //jsonClass.initializeSongList(this.applicationContext)
                 //code below is copied from example code. Replace variables
 
-                   // val playlistToAdd: List<Playlist> = listOf(
-                    //    Playlist("", "bezkoder", )
-                   // );
 
-                   // val playlistToAddString: String = playlistToAdd.toString()
-                    //val jsonTutsList: String = gson.toJson(tutsList)
-
-                   // File("Data.json").writeText(playlistToAddString)
                 //increment id
 
                // playlistI++
@@ -54,28 +64,57 @@
                 //SONGS
 
             }
-            editText = findViewById(R.id.editText)
-             textView = findViewById(R.id.playlistName)
-
+          // editText = findViewById(R.id.editText)
+            // textView = findViewById(R.id.playlistName)
+            Log.i("addPlaylist", "bambi")
 
             val uploadPlaylistCover = findViewById<Button>(R.id.playlistUploadBtn)
             uploadPlaylistCover.setOnClickListener {
 
-                Log.i("addSong", "Ok button Called")
-            nameOfPlaylist = editText.text.toString()
-            textView.text = nameOfPlaylist
+               // Log.i("addSong", "Ok button Called")
+            //nameOfPlaylist = editText.text.toString()
+            //textView.text = nameOfPlaylist
 
-
+              //var pA:PlaylistActivity = PlaylistActivity()
+              // pA.setupFilePicker()
                //var tester = songAdapterClass.itemCount
                 //come back to this this will be the ID,
                 // grab the name of song and author from the text fields
-
+                //adds avatar id (file name? something.mp3)
             }
+
         // cut off
+            setupFilePicker(playlistI)
 
         }
 
-        companion object {
+        private fun openFilePicker() {
+            var intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.setType("image/*")
+            intent = Intent.createChooser(intent, "Choose a image file")
+            filePicker!!.launch(intent)
+            //write uri (maybe) to Data.json
+
+
+        }
+        private fun setupFilePicker(curPlaylistId:Int) {//use Id to find playlist in .json file and set "avatar" to uri
+            filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                    result: ActivityResult ->
+                if (result.resultCode == RESULT_OK) {
+                   val data = result.data
+                    val uri = data!!.data
+                   playlistAvatar.setImageURI(uri)//how to find unique playlistAvatar
+                   // val inputStream: InputStream = applicationContext.contentResolver.openInputStream(data)!!
+                    //var info: String = uri.toString()
+                   // File("playlistData.json").bufferedWriter().use { out ->
+                       // out.write(info)
+                   // }
+                }
+            }
+        }
+
+
+    companion object {
             // String for LogCat documentation
             private const val TAG = "Lab 2 - Activity One"
         }

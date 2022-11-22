@@ -1,0 +1,26 @@
+[
+  {
+    "songId":"1",
+    "songName": "Baby",
+    "authorName": "Justin Bieber, Ashley",
+    "duration": "00:03:40",
+    "avatar": "@tools:sample/avatars",
+    "source": "ABC"
+  },
+  {
+    "songId":"2",
+    "songName": "Attention",
+    "authorName": "Charlie Puth, Anthony",
+    "duration": "00:02:40",
+    "avatar": "@tools:sample/avatars",
+    "source": "ABC"
+  },
+  {
+    "songId":"3",
+    "songName": "Shiver",
+    "authorName": "Ed Sheeran, Melissa",
+    "duration": "00:03:25",
+    "avatar": "@tools:sample/avatars",
+    "source": "ABC"
+  }
+]

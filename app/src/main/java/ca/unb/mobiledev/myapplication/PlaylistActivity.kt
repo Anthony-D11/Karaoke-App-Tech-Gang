@@ -47,7 +47,9 @@ class PlaylistActivity: AppCompatActivity() {
         var playlistId: String? = intent.getStringExtra("playlistId")
 
         val utils = JsonUtils(this)
+
         val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
+
 
         songPlaying = songList?.get(0)
 
@@ -110,6 +112,7 @@ class PlaylistActivity: AppCompatActivity() {
         intent.setType("image/*")
         intent = Intent.createChooser(intent, "Choose a image file")
         filePicker!!.launch(intent)
+        //write uri to Data.json. Create a JSON object and add it to Data.json file using
 
     }
     private fun setupFilePicker() {

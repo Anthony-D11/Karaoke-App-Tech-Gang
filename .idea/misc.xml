@@ -26,6 +26,7 @@
         <entry key="..\:/UNB/CS2063/TeamProject/Karaoke-App-Tech-Gang/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_playlist_list_view.xml" value="0.24947916666666667" />
+        <entry key="app/src/main/res/layout/add_playlist.xml" value="0.109375" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.19610507246376813" />
         <entry key="app/src/main/res/layout/playlist.xml" value="0.25" />
         <entry key="app/src/main/res/layout/playlist_object.xml" value="0.24895833333333334" />
