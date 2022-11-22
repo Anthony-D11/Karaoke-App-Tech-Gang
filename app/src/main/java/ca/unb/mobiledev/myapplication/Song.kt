@@ -8,7 +8,7 @@ class Song (
     var avatar: String?,
     var source: String?,
     val duration: String,
-    var songList: ArrayList<Song>?,
+  //  var songList: ArrayList<Song>?,
     //val songDetail: String?,
 
 ){
@@ -22,7 +22,7 @@ class Song (
         var avatar: String? = null,
         var source: String? = null,
         var duration: String = "00:00",
-        var songListSongs: ArrayList<Song>? = null,
+      //  var songListSongs: ArrayList<Song>? = null,
     ) {
 
         fun id(id: String) = apply { this.id = id }
@@ -36,9 +36,9 @@ class Song (
             }
         }
         fun source(source: String?) = apply { this.source = source }
-        fun songList(songList: ArrayList<Song>) = apply { this.songListSongs = songListSongs }
+       // fun songList(songList: ArrayList<Song>) = apply { this.songListSongs = songListSongs }
 
-        fun build() = Song(id, name,authorName, avatar, source, duration, songListSongs )
+        fun build() = Song(id, name,authorName, avatar, source, duration )
 
     }
 

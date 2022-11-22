@@ -1,39 +1,39 @@
 package ca.unb.mobiledev.myapplication
 
 class Playlist(
-    private var id: String?,
-    private var name: String?,
-    private var avatar: String?,
-    private var songList: ArrayList<Song>?,
+     var id: String?,
+  var name: String?,
+    var avatar: String?,
+  var songList: ArrayList<Song>?,
    // val playlistDetail: String?,
 
     ) {
     val title: String
         get() = "$name - $avatar - ${songList?.size}"
 
-    fun addSong(song: Song) {
-        songList?.add(song)
-    }
+//    fun addSong(song: Song) {
+//        songList?.add(song)
+//    }
 
-    fun getName(): String? {
-        return name
-    }
-
-    fun getId(): String? {
-        return id
-    }
-
-    fun getAvatar(): String? {
-        return avatar
-    }
-
-    fun getSongList(): ArrayList<Song>? {
-        return songList
-    }
-
-    fun addPlaylist(playlistList: ArrayList<Playlist>) {
-       // playlistList?.add(playList)
-    }
+//    fun getName(): String? {
+//        return name
+//    }
+//
+//    fun getId(): String? {
+//        return id
+//    }
+//
+//    fun getAvatar(): String? {
+//        return avatar
+//    }
+//
+//    fun getSongList(): ArrayList<Song>? {
+//        return songList
+//    }
+//
+//    fun addPlaylist(playlistList: ArrayList<Playlist>) {
+//       // playlistList?.add(playList)
+//    }
 
     data class Builder(
         var id: String? = null,
