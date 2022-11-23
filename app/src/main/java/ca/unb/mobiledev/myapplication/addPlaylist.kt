@@ -1,7 +1,6 @@
 
     package ca.unb.mobiledev.myapplication
 
-    import android.R.attr.data
     import android.content.Intent
     import android.os.Bundle
     import android.util.Log
@@ -14,8 +13,6 @@
     import androidx.activity.result.ActivityResultLauncher
     import androidx.activity.result.contract.ActivityResultContracts
     import androidx.appcompat.app.AppCompatActivity
-    import java.io.File
-    import java.io.InputStream
 
 
     class AddPlaylist : AppCompatActivity() {
@@ -55,9 +52,17 @@
                 //create new playlist and add it into Data.json file static playlist array
                 //jsonClass.initializeSongList(this.applicationContext)
                 //code below is copied from example code. Replace variables
+                editText = findViewById<EditText>(R.id.editText)
+
+                var newPlaylist:Playlist = Playlist(playlistI.toString(),  editText.text.toString(),"@tools:sample/avatars", null)
+                //code does not like editText field above
+                jsonClass = JsonUtils(applicationContext)
+                jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
 
 
+            //put this data in the Json file
                 //increment id
+                //work on hrdcoding add data in .json
 
                // playlistI++
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
