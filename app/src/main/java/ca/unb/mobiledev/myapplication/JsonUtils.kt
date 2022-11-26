@@ -10,18 +10,22 @@ import org.json.JSONObject
 import java.io.*
 import java.util.*
 
+
 var playlistI = 0 //auto-increment playlist ID
 var songI = 0
 
 class JsonUtils(context: Context) {
     private lateinit var songList: ArrayList<Song>
     private lateinit var playlistList: ArrayList<Playlist> //each playlist in this list has a songList
+    private var fileName:String = "Data.json"
+    private lateinit var filePath: String//??? Possibly delete
 
     lateinit var playlist: Playlist
 
     init {
         processJSON(context)
         loadPlaylist(context)
+
         //  loadSongList(context)
         //  getPlaylist(context, playlistList)
 //     initializeSongList(context)
@@ -169,26 +173,62 @@ class JsonUtils(context: Context) {
         val contextWrapper = ContextWrapper(context)
         val assetsPath = contextWrapper.filesDir
         val file = File(assetsPath, "Data.json")
-        Log.i("user.dir path", file.path)
+        val json = JSONObject()
 
-        val gson = Gson()
 
-        var jsonString = gson.toJson(playlistToAdd)
-
-        //file.writeText(jsonString)
-
-        var output: Writer? = null
         try {
-            var temp: FileWriter = FileWriter(file)
-            Log.i("jambala2", "weeee")
-            //val file = File("storage/sdcard/MyIdea/MyCompositions/" + compoTitle.toString() + ".json")
-            output = BufferedWriter(temp)
-
-            output.write(jsonString.toString())
-            output.close()
-        } catch (e:Exception) {
-            Log.i("Exception = ", e.message.toString())
+            PrintWriter(FileWriter(file)).use {
+                Log.i("JsonUtils", " GOOD")
+                val gson = Gson()
+                val jsonString = gson.toJson(playlistToAdd)
+                Log.i("JsonUtils", " GOOD " + jsonString.toString())
+                it.write(jsonString.toString())
+            }
+        } catch (e: Exception) {
+            Log.i("JsonUtils", " ERROR CATCH")
+            e.printStackTrace()
         }
+
+       // val contextWrapper = ContextWrapper(context)
+     //  val assetsPath = contextWrapper.filesDir
+       // val file = File(assetsPath, "Data.json")
+      // Log.i("user.dir path", file.path)
+
+       // val gson = Gson()
+
+        //var jsonString = gson.toJson(playlistToAdd)
+
+        //val fl = File(file.path)
+      //  val fin = FileInputStream(fl)
+       // val ret: String = convertStreamToString(fin)
+        //Make sure you close all streams.
+       // fin.close()
+
+//        file.writeText(jsonString)
+//
+//       var output: Writer? = null
+//       try {
+//            var temp: FileWriter = FileWriter(file)
+//           Log.i("jambala2", "wee")
+//            output = BufferedWriter(temp)
+//
+//            output.write(jsonString.toString())
+//            output.close()
+//            Log.i("Donda1", "hey")
+//        } catch (e:IOException) {
+//           Log.i("Donda", e.message.toString())
+//        }
+    }
+
+    @Throws(Exception::class)
+    fun convertStreamToString(`is`: InputStream?): String {
+        val reader = BufferedReader(InputStreamReader(`is`))
+        val sb = StringBuilder()
+        var line: String? = null
+        while (reader.readLine().also { line = it } != null) {
+            sb.append(line).append("\n")
+        }
+        return sb.toString()
     }
 
 
@@ -285,6 +325,41 @@ class JsonUtils(context: Context) {
             e.printStackTrace()
         }
 
+
+    }
+
+
+    fun writeStringToUri(playlistToAdd: Playlist, file:File) {//we have get (in RecordActivity) but not write. This will be write
+
+//        try {
+//
+//            fos.write(playlistToAdd.name.toString().toByteArray())
+//            Log.i("Yoman", "Yoman")
+//            fos.close()
+//
+//        } catch (e: IOException) {
+//
+//            e.printStackTrace()
+//        }
+            //FILEPATH MAY BE WRONG?
+        //val fos = FileOutputStream(file)
+
+        val json = JSONObject()
+
+
+        try {
+            PrintWriter(FileWriter(file)).use {
+                Log.i("JsonUtils", " GOOD")
+                val gson = Gson()
+                val jsonString = gson.toJson(playlistToAdd)
+
+                it.write(jsonString.toString())
+                Log.i("JsonUtils", " GOOD " + jsonString.toString())
+            }
+        } catch (e: Exception) {
+            Log.i("JsonUtils", " ERROR CATCH WEE")
+            e.printStackTrace()
+        }
 
     }
 

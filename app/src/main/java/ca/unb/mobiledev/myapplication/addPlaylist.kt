@@ -3,6 +3,7 @@
 
     import android.content.Intent
     import android.os.Bundle
+    import android.os.Environment
     import android.util.Log
     import android.view.View
     import android.widget.Button
@@ -13,6 +14,7 @@
     import androidx.activity.result.ActivityResultLauncher
     import androidx.activity.result.contract.ActivityResultContracts
     import androidx.appcompat.app.AppCompatActivity
+    import java.io.File
 
 
     class AddPlaylist : AppCompatActivity() {
@@ -27,7 +29,7 @@
         lateinit var jsonClass: JsonUtils
         //private lateinit var imageUri: EditText
       // lateinit var songAdapterClass: PlaylistActivity.SongAdapter
-
+        private lateinit var externalFile:File
         override fun onCreate(savedInstanceState: Bundle?) {
 
             super.onCreate(savedInstanceState)
@@ -51,24 +53,34 @@
                //Log.i("submitplaylist", "submitPlaylist Called")
                 //create new playlist and add it into Data.json file static playlist array
                 //jsonClass.initializeSongList(this.applicationContext)
-                //code below is copied from example code. Replace variables
+
                 editText = findViewById<EditText>(R.id.editText)
+
 
                 var newPlaylist:Playlist = Playlist(playlistI.toString(),  editText.text.toString(),"@tools:sample/avatars", null)
                 //code does not like editText field above
                 jsonClass = JsonUtils(applicationContext)
-                jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
 
-
+                if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+                    submitPlaylist.isEnabled = false
+                } else {
+                   // externalFile = File(getExternalFilesDir("MyFileStorage"), "Data.json")
+                    var dir:File = File(Environment.getExternalStorageDirectory().absolutePath + "/Download")
+                    dir.mkdirs()
+                    externalFile = File(dir, "Data.json")
+                }
+               // jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
+                jsonClass.writeStringToUri(newPlaylist, externalFile)
+                editText.setText("")
             //put this data in the Json file
                 //increment id
-                //work on hrdcoding add data in .json
+               playlistI++
 
-               // playlistI++
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
                 //SONGS
 
             }
+
           // editText = findViewById(R.id.editText)
             // textView = findViewById(R.id.playlistName)
             Log.i("addPlaylist", "bambi")
@@ -91,6 +103,20 @@
         // cut off
             setupFilePicker(playlistI)
 
+        }
+
+        private fun isExternalStorageReadOnly(): Boolean {
+            val extStorageState = Environment.getExternalStorageState()
+            return if (Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState) {
+                true
+            } else false
+        }
+
+       private fun isExternalStorageAvailable(): Boolean {
+            val extStorageState = Environment.getExternalStorageState()
+            return if (Environment.MEDIA_MOUNTED == extStorageState) {
+                true
+            } else false
         }
 
         private fun openFilePicker() {
