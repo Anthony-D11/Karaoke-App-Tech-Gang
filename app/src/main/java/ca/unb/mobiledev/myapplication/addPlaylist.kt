@@ -60,17 +60,13 @@
                 var newPlaylist:Playlist = Playlist(playlistI.toString(),  editText.text.toString(),"@tools:sample/avatars", null)
                 //code does not like editText field above
                 jsonClass = JsonUtils(applicationContext)
-
-                if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+                if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
                     submitPlaylist.isEnabled = false
                 } else {
-                   // externalFile = File(getExternalFilesDir("MyFileStorage"), "Data.json")
-                    var dir:File = File(Environment.getExternalStorageDirectory().absolutePath + "/Download")
-                    dir.mkdirs()
-                    externalFile = File(dir, "Data.json")
+                    // need access to read function here OR initialize externalFile in JsonUtils
+                        jsonClass.writeStringToUri(newPlaylist)
+
                 }
-               // jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
-                jsonClass.writeStringToUri(newPlaylist, externalFile)
                 editText.setText("")
             //put this data in the Json file
                 //increment id
@@ -78,7 +74,6 @@
 
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
                 //SONGS
-
             }
 
           // editText = findViewById(R.id.editText)

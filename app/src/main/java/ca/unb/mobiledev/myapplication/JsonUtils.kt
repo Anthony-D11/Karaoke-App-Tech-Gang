@@ -5,6 +5,9 @@ import android.content.ContextWrapper
 import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
@@ -19,7 +22,7 @@ class JsonUtils(context: Context) {
     private lateinit var playlistList: ArrayList<Playlist> //each playlist in this list has a songList
     private var fileName:String = "Data.json"
     private lateinit var filePath: String//??? Possibly delete
-
+    private lateinit var externalFile: File
     lateinit var playlist: Playlist
 
     init {
@@ -328,40 +331,73 @@ class JsonUtils(context: Context) {
 
     }
 
+    fun createDirectory(){
+       externalFile = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/Data.json")
+        var dir: File = File(Environment.getExternalStorageDirectory().absolutePath + "/Download")
+        dir.mkdirs()
+        externalFile = File(dir, "Data.json")
+    }
 
-    fun writeStringToUri(playlistToAdd: Playlist, file:File) {//we have get (in RecordActivity) but not write. This will be write
+    fun readDataFromJson(file:File) : String{
+        var data:String = ""
 
-//        try {
-//
-//            fos.write(playlistToAdd.name.toString().toByteArray())
-//            Log.i("Yoman", "Yoman")
-//            fos.close()
-//
-//        } catch (e: IOException) {
-//
-//            e.printStackTrace()
-//        }
-            //FILEPATH MAY BE WRONG?
-        //val fos = FileOutputStream(file)
+        return data
+    }
 
-        val json = JSONObject()
+    fun writeStringToUri(playlistToAdd: Playlist) {//we have get (in RecordActivity) but not write. This will be write
 
+        val gson = Gson()
+        Log.i("cho", externalFile.path)
+        var previousJson: String? = readDataFromJson(externalFile)
+
+        val playlists: MutableList<Playlist> = gson.fromJson<MutableList<Playlist>>(
+            previousJson,
+            object : TypeToken<List<Playlist?>?>() {}.type
+        )//get the information from .json file as a list of Playlists
+        Log.i("heybo", previousJson.toString())
+
+// set properties
+        playlists.add(playlistToAdd)// add new info to original list
+
+        var jsonString = gson.toJson(playlists)//convert to json
 
         try {
-            PrintWriter(FileWriter(file)).use {
-                Log.i("JsonUtils", " GOOD")
-                val gson = Gson()
-                val jsonString = gson.toJson(playlistToAdd)
+            PrintWriter(FileWriter(externalFile)).use {//add to .json file
 
-                it.write(jsonString.toString())
+                it.write(jsonString.toString())//MAYBE FIND A METHOD WHERE YOU DON'T WRITE TO IT IN STRING FORM?
                 Log.i("JsonUtils", " GOOD " + jsonString.toString())
             }
         } catch (e: Exception) {
             Log.i("JsonUtils", " ERROR CATCH WEE")
             e.printStackTrace()
-        }
+       }
 
+
+//        externalFile = File(Environment.getExternalStorageDirectory().absolutePath + "/Download/Data.json")
+//        var dir: File = File(Environment.getExternalStorageDirectory().absolutePath + "/Download")
+//        dir.mkdirs()
+//        externalFile = File(dir, "Data.json")
+//
+//        Log.i("JsonUtils", " GOOD")
+//        val json = JSONObject()
+//
+//        try {
+//            PrintWriter(FileWriter(externalFile)).use {
+//
+//                val gson = Gson()
+//                val jsonString = gson.toJson(playlistToAdd)
+//
+//                it.write(jsonString.toString())
+//                Log.i("JsonUtils", " GOOD " + jsonString.toString())
+//            }
+//        } catch (e: Exception) {
+//            Log.i("JsonUtils", " ERROR CATCH WEE")
+//            e.printStackTrace()
+//       }
     }
+
+
+
 
     fun getSongList(): ArrayList<Song> {
         return songList
