@@ -36,30 +36,16 @@
             super.onCreate(savedInstanceState)
             setContentView(R.layout.add_playlist)
 
-            //playlistAvatar = findViewById(R.id.playlistAvatar)
 
-            //imageUri = findViewById(R.id.playlistName)
-           // Log.i("addSong", "test")
-            //cut off
-            //addPlaylistButton = findViewById(R.id.addSongsButton)
-            // code submit button and ok button
-            //not sure why "playlist name" is in add_playlist.xml, I don't think it's necessary
-            //Add a textfield saying the name of the file we just uploaded.
-            //add a new playlist, add it to song list in json util
-            //change xml files
-            //file picker in PlaylistActivity
 
             val submitPlaylist = findViewById<Button>(R.id.playlistSubmitBtn)//CLICK THIS BUTTON TO SUBMIT INFO
             submitPlaylist.setOnClickListener {
-               //Log.i("submitplaylist", "submitPlaylist Called")
-                //create new playlist and add it into Data.json file static playlist array
-                //jsonClass.initializeSongList(this.applicationContext)
 
                 editText = findViewById<EditText>(R.id.editText)
                 var TestSongList = ArrayList<Song>()
 
-//changging the playlistI  , editText.text.toString()
-                var newPlaylist:Playlist = Playlist(playlistI.toString(), "tester","@tools:sample/avatars", TestSongList )
+
+                var newPlaylist:Playlist = Playlist(playlistI.toString(), editText.text.toString(),"@tools:sample/avatars", TestSongList )
                 //code does not like editText field above
                 jsonClass = JsonUtils(applicationContext)
                 if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
