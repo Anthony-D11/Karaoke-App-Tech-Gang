@@ -15,6 +15,7 @@
     import androidx.activity.result.contract.ActivityResultContracts
     import androidx.appcompat.app.AppCompatActivity
     import java.io.File
+    import java.util.ArrayList
 
 
     class AddPlaylist : AppCompatActivity() {
@@ -55,25 +56,30 @@
                 //jsonClass.initializeSongList(this.applicationContext)
 
                 editText = findViewById<EditText>(R.id.editText)
+                var TestSongList = ArrayList<Song>()
 
-
-                var newPlaylist:Playlist = Playlist(playlistI.toString(),  editText.text.toString(),"@tools:sample/avatars", null)
+//changging the playlistI  , editText.text.toString()
+                var newPlaylist:Playlist = Playlist(playlistI.toString(), "tester","@tools:sample/avatars", TestSongList )
                 //code does not like editText field above
                 jsonClass = JsonUtils(applicationContext)
                 if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
                     submitPlaylist.isEnabled = false
+                    Log.i("JsonUtils", "nope")
                 } else {
                     // need access to read function here OR initialize externalFile in JsonUtils
-                        jsonClass.writeStringToUri(newPlaylist)
+                    Log.i("JsonUtils", "does it work")
+                       jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
 
                 }
                 editText.setText("")
             //put this data in the Json file
                 //increment id
                playlistI++
-
+                val intent = Intent(this@AddPlaylist, MainActivity::class.java)
+                startActivity(intent)
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
                 //SONGS
+
             }
 
           // editText = findViewById(R.id.editText)

@@ -28,7 +28,8 @@ class JsonUtils(context: Context) {
     init {
         processJSON(context)
         loadPlaylist(context)
-
+       //var newPlaylist:Playlist = Playlist("9",  "testing","@tools:sample/avatars", null)
+    //    addPlaylistToJSONFile(newPlaylist,context)
         //  loadSongList(context)
         //  getPlaylist(context, playlistList)
 //     initializeSongList(context)
@@ -99,21 +100,30 @@ class JsonUtils(context: Context) {
     }
 
     fun loadJSONFromAssets(context: Context): String? {//
-        Log.i("Hellos", context.assets.list("").toString())
-        var string: String? = ""
-        try {
-            val inputStream: InputStream = context.assets.open("Data.json")
-            var size: Int = inputStream.available()
-            var buffer = ByteArray(size)
-            inputStream.read(buffer)
-            string = String(buffer)
-            Log.i("JsonUtils", "file was opened")
+       // Log.i("Hellos", context.assets.list("").toString())
 
-        } catch (e: IOException) {
-            Log.i("JsonUtils", "file did NOT open")
-            e.printStackTrace()
-        }
-        return string
+        val contextWrapper = ContextWrapper(context)
+        val assetsPath = contextWrapper.filesDir
+        val file = File(assetsPath, "playlistData.json")
+
+        var string = file.inputStream().readBytes().toString(Charsets.UTF_8)
+        Log.i("JsonUtils", "string " + string)
+     return string
+    //   }
+//        var string: String? = ""
+//        try {
+//            val inputStream: InputStream =
+//            var size: Int = inputStream.available()
+//            var buffer = ByteArray(size)
+//            inputStream.read(buffer)
+//            string = String(buffer)
+//            Log.i("JsonUtils", "file was opened")
+//
+//        } catch (e: IOException) {
+//            Log.i("JsonUtils", "file did NOT open")
+//            e.printStackTrace()
+//        }
+//        return string
     }
 
     fun loadPlaylist(context: Context) {//making objects from the info in the Data.json file
@@ -129,29 +139,28 @@ class JsonUtils(context: Context) {
 
 
         try {
+            //
+//            val contextWrapper = ContextWrapper(context)
+//            val assetsPath = contextWrapper.filesDir
+//            val file = File(assetsPath, "playlistData.json")
+
             val obj = JSONObject(loadJSONFromAssets(context))
+
             val userArray = obj.getJSONArray("playlists")
-            val userArraySong = obj.getJSONArray("songs")
+            //val userArraySong = obj.getJSONArray("songs")
 
             for (i in 0 until userArray.length()) {
 
-                fun addSongToPlaylist(songToAdd: Song) {
-
-                }
-
-                fun addPlaylistToList(playlistToAdd: Playlist) {//adds playlist to playlistList
-
-                }
 
                 val playlistDetail = userArray.getJSONObject(i)
-                val songListsDetail = userArraySong.getJSONObject(i)
+               // val songListsDetail = userArraySong.getJSONObject(i)
                 Log.i("JsonUtils", "playlistID $playlistDetail")
 
                 playlistID.add(playlistDetail.getString("playlistId"))
                 playlistNameShow.add(playlistDetail.getString("playlistName"))
                 avatarShow.add(playlistDetail.getString("avatar"))
                 testing.add(playlistDetail.getString("songList"))
-                songPlaylistShow.add(songListsDetail.getString("songId"))
+                //songPlaylistShow.add(songListsDetail.getString("songId"))
 
                 Log.i("JsonUtils", "songList adding with melissa " + songList[i].authorName)
 
@@ -172,20 +181,48 @@ class JsonUtils(context: Context) {
     }
 
     fun addPlaylistToJSONFile(playlistToAdd: Playlist, context: Context) {
-
         val contextWrapper = ContextWrapper(context)
         val assetsPath = contextWrapper.filesDir
-        val file = File(assetsPath, "Data.json")
+        val file = File(assetsPath, "playlistData.json")
         val json = JSONObject()
+
+//try and add more than one playlist here
+       // Log.i("JsonUtils", " playlist help " + playlistList[1].name.toString())
+        val gson = Gson()
+        var oldContent = " "
+        var counter = playlistList.size
+
+        var mixed = " "
+
+        for (i in 0 until playlistList.size) {
+            if(playlistList[i].id?.toInt()==0){
+                oldContent = oldContent + " " + gson.toJson(playlistList[i])
+
+            }else{
+                oldContent = oldContent + " , " + gson.toJson(playlistList[i])
+
+            }
+
+        }
 
 
         try {
             PrintWriter(FileWriter(file)).use {
                 Log.i("JsonUtils", " GOOD")
-                val gson = Gson()
                 val jsonString = gson.toJson(playlistToAdd)
+
+       if(playlistList.size>0){
+           mixed = oldContent + ", " + jsonString
+       }else{
+           mixed = oldContent  + jsonString
+       }
+
+
+                Log.i("JsonUtils", " mixed " + mixed)
                 Log.i("JsonUtils", " GOOD " + jsonString.toString())
-                it.write(jsonString.toString())
+
+                it.write("{\"playlists\": [ $mixed ]}")
+                counter =1
             }
         } catch (e: Exception) {
             Log.i("JsonUtils", " ERROR CATCH")
