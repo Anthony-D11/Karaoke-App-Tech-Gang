@@ -3,6 +3,7 @@
 
     import android.content.Intent
     import android.os.Bundle
+    import android.os.Environment
     import android.util.Log
     import android.view.View
     import android.widget.Button
@@ -13,6 +14,8 @@
     import androidx.activity.result.ActivityResultLauncher
     import androidx.activity.result.contract.ActivityResultContracts
     import androidx.appcompat.app.AppCompatActivity
+    import java.io.File
+    import java.util.ArrayList
 
 
     class AddPlaylist : AppCompatActivity() {
@@ -27,48 +30,48 @@
         lateinit var jsonClass: JsonUtils
         //private lateinit var imageUri: EditText
       // lateinit var songAdapterClass: PlaylistActivity.SongAdapter
-
+        private lateinit var externalFile:File
         override fun onCreate(savedInstanceState: Bundle?) {
 
             super.onCreate(savedInstanceState)
             setContentView(R.layout.add_playlist)
 
-            //playlistAvatar = findViewById(R.id.playlistAvatar)
 
-            //imageUri = findViewById(R.id.playlistName)
-           // Log.i("addSong", "test")
-            //cut off
-            //addPlaylistButton = findViewById(R.id.addSongsButton)
-            // code submit button and ok button
-            //not sure why "playlist name" is in add_playlist.xml, I don't think it's necessary
-            //Add a textfield saying the name of the file we just uploaded.
-            //add a new playlist, add it to song list in json util
-            //change xml files
-            //file picker in PlaylistActivity
 
             val submitPlaylist = findViewById<Button>(R.id.playlistSubmitBtn)//CLICK THIS BUTTON TO SUBMIT INFO
             submitPlaylist.setOnClickListener {
-               //Log.i("submitplaylist", "submitPlaylist Called")
-                //create new playlist and add it into Data.json file static playlist array
-                //jsonClass.initializeSongList(this.applicationContext)
-                //code below is copied from example code. Replace variables
-                editText = findViewById<EditText>(R.id.editText)
-
-                var newPlaylist:Playlist = Playlist(playlistI.toString(),  editText.text.toString(),"@tools:sample/avatars", null)
-                //code does not like editText field above
                 jsonClass = JsonUtils(applicationContext)
-                jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
+                editText = findViewById<EditText>(R.id.editText)
+                var TestSongList = ArrayList<Song>()
 
+                var playListID = jsonClass.getPlaylistSize()?.toInt()?.plus(1)
 
+                var newSongs:Song = Song("0","testing one two three" ,"tester","@tools:sample/avatars",  "ABC","00:03:40" )
+                TestSongList.add(newSongs)
+
+                var newPlaylist:Playlist = Playlist(playListID.toString(), editText.text.toString(),"@tools:sample/avatars", TestSongList )
+                //code does not like editText field above
+
+                if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
+                    submitPlaylist.isEnabled = false
+                    Log.i("JsonUtils", "nope")
+                } else {
+                    // need access to read function here OR initialize externalFile in JsonUtils
+                    Log.i("JsonUtils", "does it work")
+                       jsonClass.addPlaylistToJSONFile(newPlaylist, applicationContext)
+
+                }
+                editText.setText("")
             //put this data in the Json file
                 //increment id
-                //work on hrdcoding add data in .json
 
-               // playlistI++
+                val intent = Intent(this@AddPlaylist, MainActivity::class.java)
+                startActivity(intent)
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND
                 //SONGS
 
             }
+
           // editText = findViewById(R.id.editText)
             // textView = findViewById(R.id.playlistName)
             Log.i("addPlaylist", "bambi")
@@ -91,6 +94,20 @@
         // cut off
             setupFilePicker(playlistI)
 
+        }
+
+        private fun isExternalStorageReadOnly(): Boolean {
+            val extStorageState = Environment.getExternalStorageState()
+            return if (Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState) {
+                true
+            } else false
+        }
+
+       private fun isExternalStorageAvailable(): Boolean {
+            val extStorageState = Environment.getExternalStorageState()
+            return if (Environment.MEDIA_MOUNTED == extStorageState) {
+                true
+            } else false
         }
 
         private fun openFilePicker() {

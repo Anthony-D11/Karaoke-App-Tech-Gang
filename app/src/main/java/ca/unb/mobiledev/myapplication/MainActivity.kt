@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var mediaRecorder: MediaRecorder? = null
     private lateinit var microphoneButton: FloatingActionButton
     private var handler: Handler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -58,6 +59,8 @@ class MainActivity : AppCompatActivity() {
             val intents = Intent(this, AddPlaylist::class.java)
             startActivity(intents)
         }
+        val json:JsonUtils = JsonUtils(applicationContext)
+        json.createDirectory()
 
     }
     class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity)

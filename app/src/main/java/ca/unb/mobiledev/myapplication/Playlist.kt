@@ -10,7 +10,7 @@ class Playlist(
     ) {
     val title: String
         get() = "$name - $avatar - ${songList?.size}"
-
+    fun addSong(song: Song) { songList?.add(song) }
 //    fun addSong(song: Song) {
 //        songList?.add(song)
 //    }
@@ -46,8 +46,8 @@ class Playlist(
         fun name(name: String) = apply { this.name = name }
         fun avatar(avatar: String?) = apply { this.avatar = avatar }
         fun songList(songList: ArrayList<Song>) = apply { this.songList = songList }
-
         fun build() = Playlist(id, name, avatar, songList)
+
 
 
     }

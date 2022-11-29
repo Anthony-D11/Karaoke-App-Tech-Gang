@@ -1,6 +1,8 @@
 package ca.unb.mobiledev.myapplication
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -33,52 +35,57 @@ class AddSong : AppCompatActivity() {
         addSong.setOnClickListener {
             Log.i("AddSong", "addSongButton Called")
 
+
         }
-        editText = findViewById(R.id.editText)
-        textView = findViewById(R.id.nameOfSongtxt)
+
 
 
         val done = findViewById<Button>(R.id.submitBnt)
         done.setOnClickListener {
+            Log.i("AddSong", "addSongButton Called")
+            jsonClass = JsonUtils(applicationContext)
 
-            Log.i("addSong", "Ok button Called")
-            nameOfSong = editText.text.toString()
-            textView.text = nameOfSong
+            var songID = jsonClass.getSongSize()?.toInt()?.plus(1)
+            Log.i("JsonUtils", "songId" + songID)
+            var newSongs:Song = Song(songID.toString(),"testing one two three" ,"tester","@tools:sample/avatars",  "ABC","00:03:40" )
+            //code does not like editText field above
 
-//            var tester = songAdapterClass.itemCount
-            //come back to this this will be the ID,
-            // grab the name of song and author from the text fields
+            if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
+                addSong.isEnabled = false
+                Log.i("JsonUtils", "nope")
+            } else {
+
+                Log.i("JsonUtils", "does it work")
+                jsonClass.addSongToJSONFile(newSongs, applicationContext)
+
+            }
+
+
+
+            val intent = Intent(this@AddSong, MainActivity::class.java)
+            startActivity(intent)
+
+
+
 
         }
 
 
     }
 
-//    private fun addToJson() {
-//        val path = "/json/Data.json"
-//        val json = JSONObject()
-//
-//        try {
-//            json.put("songId", "4")
-//            json.put("songName", "test")
-//            json.put("authorName", "00:03:40")
-//            json.put("duration", "@tools:sample/avatars")
-//            json.put("avatar", "ABC")
-//
-//
-//        } catch (e: JSONException) {
-//            e.printStackTrace()
-//        }
-//
-//        try {
-//            PrintWriter(FileWriter(path, Charset.defaultCharset()))
-//                .use { it.write(json.toString()) }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+  private fun isExternalStorageReadOnly(): Boolean {
+      val extStorageState = Environment.getExternalStorageState()
+      return if (Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState) {
+          true
+      } else false
+  }
 
-
-  //  }
+    private fun isExternalStorageAvailable(): Boolean {
+        val extStorageState = Environment.getExternalStorageState()
+        return if (Environment.MEDIA_MOUNTED == extStorageState) {
+            true
+        } else false
+    }
 
     companion object {
         // String for LogCat documentation
