@@ -281,7 +281,7 @@ class JsonUtils(context: Context) {
         var mixed = " "
 
         for (i in 0 until songList.size) {
-            if(songList[i].id?.toInt()==1){
+            if(i==0){
                 oldContent = oldContent + " " + gson.toJson(songList[i])
             }else{
                 oldContent = oldContent + " , " + gson.toJson(songList[i])

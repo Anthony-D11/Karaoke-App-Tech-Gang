@@ -51,7 +51,7 @@ class PlaylistActivity: AppCompatActivity() {
         val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
 
         //this line crashes the program not sure why
-   //     songPlaying = songList?.get(0)
+     //songPlaying = songList?.get(0)
 
 
 
