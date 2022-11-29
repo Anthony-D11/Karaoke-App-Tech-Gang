@@ -40,14 +40,18 @@
 
             val submitPlaylist = findViewById<Button>(R.id.playlistSubmitBtn)//CLICK THIS BUTTON TO SUBMIT INFO
             submitPlaylist.setOnClickListener {
-
+                jsonClass = JsonUtils(applicationContext)
                 editText = findViewById<EditText>(R.id.editText)
                 var TestSongList = ArrayList<Song>()
 
+                var playListID = jsonClass.getPlaylistSize()?.toInt()?.plus(1)
 
-                var newPlaylist:Playlist = Playlist(playlistI.toString(), editText.text.toString(),"@tools:sample/avatars", TestSongList )
+                var newSongs:Song = Song("0","testing one two three" ,"tester","@tools:sample/avatars",  "ABC","00:03:40" )
+                TestSongList.add(newSongs)
+
+                var newPlaylist:Playlist = Playlist(playListID.toString(), editText.text.toString(),"@tools:sample/avatars", TestSongList )
                 //code does not like editText field above
-                jsonClass = JsonUtils(applicationContext)
+
                 if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
                     submitPlaylist.isEnabled = false
                     Log.i("JsonUtils", "nope")
@@ -60,7 +64,7 @@
                 editText.setText("")
             //put this data in the Json file
                 //increment id
-               playlistI++
+
                 val intent = Intent(this@AddPlaylist, MainActivity::class.java)
                 startActivity(intent)
                 //MAYBE IT WOULD BE EASIER TO CREATE 2 DIFFERENT DATA.JSON FILES FOR PLAYLISTS AND

@@ -42,7 +42,7 @@ class PlaylistActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.playlist)
-
+        Log.i("playlistActivity", " load songlist  " )
         var intent: Intent = getIntent()
         var playlistId: String? = intent.getStringExtra("playlistId")
 
@@ -51,7 +51,7 @@ class PlaylistActivity: AppCompatActivity() {
         val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
 
         //this line crashes the program not sure why
-    //songPlaying = songList?.get(0)
+   //     songPlaying = songList?.get(0)
 
 
 
@@ -97,6 +97,7 @@ class PlaylistActivity: AppCompatActivity() {
         recyclerView.adapter = adapter
         mediaPlayer = MediaPlayer()
         setupFilePicker()
+
     }
 
     private fun editAvatar() {
@@ -150,7 +151,7 @@ class PlaylistActivity: AppCompatActivity() {
         val musicFile = File(music, fileName)
         return musicFile.path
     }
-    class SongAdapter(private val songList: ArrayList<Song>, private val parentActivity: AppCompatActivity, private val mode: String)
+    class SongAdapter(private val songList: ArrayList<Song>?, private val parentActivity: AppCompatActivity, private val mode: String)
         :RecyclerView.Adapter<SongAdapter.ViewHolder>(){
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
             val songName_list: TextView
@@ -163,6 +164,7 @@ class PlaylistActivity: AppCompatActivity() {
                 songDuration_list = view.findViewById(R.id.songDuration_list)
                 songAvatar_list = view.findViewById(R.id.songAvatar_list)
             }
+
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -172,17 +174,21 @@ class PlaylistActivity: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.songName_list.text = songList[position].name
-            holder.authorName_list.text = songList[position].authorName
-            holder.songDuration_list.text = songList[position].duration
+            Log.i("playlistActivity", " load songlist working? " )
+            holder.songName_list.text = songList?.get(position)!!.name
+            holder.authorName_list.text = songList?.get(position).authorName
+            holder.songDuration_list.text = songList?.get(position).duration
             holder.songAvatar_list.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
                 (parentActivity as PlaylistActivity).playSong(songList[position],"General", "ABC.mp3")
             }
         }
         override fun getItemCount(): Int {
-            return songList.size
+            return songList!!.size
         }
     }
-
+    companion object {
+        // String for LogCat documentation
+        const val TAG = "Lab 2 - Activity One"
+    }
 }
