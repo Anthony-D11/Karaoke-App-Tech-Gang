@@ -1,6 +1,7 @@
 package ca.unb.mobiledev.myapplication
 
 import android.Manifest
+import android.app.Dialog
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,10 +13,12 @@ import android.os.CountDownTimer
 import android.os.Environment
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,6 +35,9 @@ class RecordActivity: AppCompatActivity() {
     lateinit var chooseSongButton: Button
     lateinit var chooseLyricsButton: Button
     lateinit var lyricsView: TextView
+    lateinit var dialog: Dialog
+    lateinit var dirSource: String
+    lateinit var fileName: String
 
     private var maximumSeconds: Long = 10000
     private var intervalSeconds: Long = 1
@@ -43,6 +49,7 @@ class RecordActivity: AppCompatActivity() {
     private var songPlaying: String = ""
     private var filePicker: ActivityResultLauncher<Intent>? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.record);
@@ -51,6 +58,12 @@ class RecordActivity: AppCompatActivity() {
 
         if (extras.getStringExtra("songName") != null) {
             songPlaying = extras.getStringExtra("songName").toString()
+        }
+        if (extras.getStringExtra("fileName") != null) {
+            fileName = extras.getStringExtra("fileName").toString()
+        }
+        if (extras.getStringExtra("dirSource") != null) {
+            dirSource = extras.getStringExtra("dirSource").toString()
         }
 
         displayTimer = findViewById(R.id.lblTimer)
@@ -67,7 +80,7 @@ class RecordActivity: AppCompatActivity() {
             if (!isRecording) {
                 if (checkRecordingPermission()) {
                     if (songPlaying != "") {
-                        mediaPlayer.start()
+                        startPlayingSong()
                     }
                     startRecording()
                 } else {
@@ -76,8 +89,9 @@ class RecordActivity: AppCompatActivity() {
             }
             else {
                 stopRecording()
+                onCreateDialog()
                 if (songPlaying != "") {
-                    mediaPlayer.stop()
+                    stopPlayingSong()
                     songPlaying = ""
                 }
             }
@@ -88,7 +102,10 @@ class RecordActivity: AppCompatActivity() {
         chooseLyricsButton.setOnClickListener {
             chooseLyrics()
         }
-        if (songPlaying != "") prepareSong(songPlaying, extras.getStringExtra("dirSource")!!, extras.getStringExtra("fileName")!!)
+        if (songPlaying != "") {
+            chooseSongButton.text = songPlaying
+            prepareSong(getMusicPath(dirSource, fileName))
+        }
         setupFilePicker()
 
     }
@@ -100,9 +117,8 @@ class RecordActivity: AppCompatActivity() {
                 mediaRecorder = MediaRecorder()
                 mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                mediaRecorder!!.setOutputFile(getRecordingPath())
+                mediaRecorder!!.setOutputFile(getRecordingPath("Test"))
                 mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                val path = getRecordingPath()
                 mediaRecorder!!.prepare()
                 mediaRecorder!!.start()
                 runOnUiThread(object: Runnable {
@@ -136,19 +152,22 @@ class RecordActivity: AppCompatActivity() {
                 })
             }
         })
-        Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
     }
-    private fun getRecordingPath(): String {
+    private fun getRecordingPath(songName: String): String {
         val contextWrapper = ContextWrapper(applicationContext)
         val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/General")
-        val musicFile = File(music, "Test" + ".mp3")
+        val musicFile = File(music, songName + ".mp3")
         return musicFile.path
     }
 
-    fun prepareSong(song: String, dirSource: String, fileName: String) {
-        chooseSongButton.text = song
-        songPlaying = song
-        mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
+    private fun startPlayingSong() {
+        mediaPlayer.start()
+    }
+    private fun stopPlayingSong() {
+        mediaPlayer.stop()
+    }
+    private fun prepareSong(path: String) {
+        mediaPlayer.setDataSource(path)
         mediaPlayer.prepare()
     }
     private fun getMusicPath(dirSource: String, fileName: String): String {
@@ -230,6 +249,42 @@ class RecordActivity: AppCompatActivity() {
         val bufferedReader = File(path).bufferedReader()
         val result = bufferedReader.use { it.readText() }
         return result
+    }
+
+    private fun onCreateDialog() {
+        var playing = false
+        val dialogBuilder = AlertDialog.Builder(this)
+        val popupView: View = layoutInflater.inflate(R.layout.save_song, null)
+        val songNameEditText: EditText = popupView.findViewById(R.id.songNameEditText)
+        val playMusicButton: Button = popupView.findViewById(R.id.playMusicButton)
+        val submitButton: Button = popupView.findViewById(R.id.submitButton)
+        val cancelButton: Button = popupView.findViewById(R.id.cancelButton)
+
+        cancelButton.setOnClickListener {
+            val file = File(getRecordingPath("Test"))
+            file.delete()
+            dialog.dismiss()
+        }
+        submitButton.setOnClickListener {
+            val file = File(getRecordingPath("Test"))
+            file.renameTo(File(getRecordingPath(songNameEditText.text.toString())))
+            Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+        playMusicButton.setOnClickListener {
+            if (!playing) {
+                prepareSong(getRecordingPath("Test"))
+                startPlayingSong()
+                playing = true
+            }
+            else {
+                stopPlayingSong()
+            }
+
+        }
+        dialogBuilder.setView(popupView)
+        dialog = dialogBuilder.create()
+        dialog.show()
     }
 
     private fun requestRecordingPermission() {

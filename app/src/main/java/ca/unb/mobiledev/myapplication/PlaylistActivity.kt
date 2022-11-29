@@ -43,14 +43,12 @@ class PlaylistActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.playlist)
 
-        var intent: Intent = getIntent()
-        var playlistId: String? = intent.getStringExtra("playlistId")
+        val intent: Intent = getIntent()
+        val playlistId: String? = intent.getStringExtra("playlistId")
 
         val utils = JsonUtils(this)
 
         val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
-
-
         songPlaying = songList?.get(0)
 
         addSongsButton = findViewById(R.id.addSongsButton)
@@ -140,14 +138,15 @@ class PlaylistActivity: AppCompatActivity() {
         mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
         mediaPlayer.prepare()
         mediaPlayer.start()
-
     }
+
     private fun getMusicPath(dirSource: String, fileName: String): String {
         val contextWrapper = ContextWrapper(applicationContext)
         val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/$dirSource")
         val musicFile = File(music, fileName)
         return musicFile.path
     }
+
     class SongAdapter(private val songList: ArrayList<Song>, private val parentActivity: AppCompatActivity, private val mode: String)
         :RecyclerView.Adapter<SongAdapter.ViewHolder>(){
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
