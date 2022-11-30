@@ -2,6 +2,7 @@ package ca.unb.mobiledev.myapplication
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,12 +15,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
@@ -32,19 +35,29 @@ class MainActivity : AppCompatActivity() {
     private var mediaRecorder: MediaRecorder? = null
     private lateinit var microphoneButton: FloatingActionButton
     private var handler: Handler = Handler()
+    lateinit var dialog: Dialog
+    lateinit var playlistNameEditText: EditText
+    lateinit var submitButton: Button
+    lateinit var cancelButton: Button
+    lateinit var choosePictureButton: Button
+
+    private var filePicker: ActivityResultLauncher<Intent>? = null
+    private var newPlaylistName = ""
+    private var newPlaylistAvatar = ""
+    private var utils: JsonUtils? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar!!.hide()
-        val sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
 
-        var utils = JsonUtils(this)
+        utils = JsonUtils(applicationContext)
 
 
-        var playlistList = utils.getPlaylistList()
-        var recyclerView = findViewById<RecyclerView>(R.id.playlistList)
-        var adapter = PlaylistAdapter(playlistList, this)
+        val playlistList = utils!!.getPlaylistList()
+        val recyclerView = findViewById<RecyclerView>(R.id.playlistList)
+        val adapter = PlaylistAdapter(playlistList, this)
         microphoneButton = findViewById(R.id.microphoneButton)
         recyclerView.adapter = adapter
 
@@ -56,13 +69,61 @@ class MainActivity : AppCompatActivity() {
         }
         val addPlayListButton = findViewById<FloatingActionButton>(R.id.addPlaylistButton)
         addPlayListButton.setOnClickListener {
-            val intents = Intent(this, AddPlaylist::class.java)
-            startActivity(intents)
+            onCreateDialog()
         }
-        val json:JsonUtils = JsonUtils(applicationContext)
-        json.createDirectory()
-
+        setupFilePicker()
     }
+    private fun onCreateDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+        val popupView: View = layoutInflater.inflate(R.layout.add_playlist, null)
+
+
+
+        playlistNameEditText = popupView.findViewById(R.id.playlistEditText)
+        submitButton = popupView.findViewById(R.id.playlistSubmitBtn)
+        cancelButton = popupView.findViewById(R.id.playlistCancelBtn)
+        choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
+
+
+
+        cancelButton.setOnClickListener { dialog.dismiss() }
+
+        submitButton.setOnClickListener {
+            newPlaylistName = playlistNameEditText.text.toString()
+            val newPlaylist = Playlist.Builder(newPlaylistName, newPlaylistAvatar, "", ArrayList<String>()).build()
+            utils!!.addPlaylistToJSONFile(newPlaylist, applicationContext)
+            newPlaylistAvatar = ""
+            dialog.dismiss()
+        }
+
+        choosePictureButton.setOnClickListener {
+            choosePhoto()
+        }
+
+        dialogBuilder.setView(popupView)
+        dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
+    private fun setupFilePicker() {
+        filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+                val uri = data!!.data
+                newPlaylistAvatar = uri.toString()
+                choosePictureButton.text = newPlaylistAvatar.substring(newPlaylistAvatar.lastIndexOf('/'))
+            }
+        }
+    }
+
+    private fun choosePhoto() {
+        var intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("image/*")
+        intent = Intent.createChooser(intent, "Choose a photo")
+        filePicker!!.launch(intent)
+    }
+
     class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity)
         :RecyclerView.Adapter<PlaylistAdapter.ViewHolder>(){
         class ViewHolder: RecyclerView.ViewHolder {
@@ -84,11 +145,13 @@ class MainActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.playlistName.text = playlistList[position].name
-            holder.songNumbers.text = playlistList[position].songList?.size.toString()
-            holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
+            holder.songNumbers.text = playlistList[position].songList.size.toString()
+            if (playlistList[position].avatar != "")
+                holder.playlistAvatar.setImageURI(playlistList[position].avatar.toUri())
+            else holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {
-                    putExtra("playlistId", playlistList[position].id)
+                    putExtra("playlistName", playlistList[position].name)
                 }
                 parentActivity.startActivity(intent)
             }

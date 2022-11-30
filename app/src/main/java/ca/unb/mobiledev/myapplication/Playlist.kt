@@ -1,54 +1,28 @@
 package ca.unb.mobiledev.myapplication
 
-class Playlist(
-     var id: String?,
-  var name: String?,
-    var avatar: String?,
-  var songList: ArrayList<Song>?,
-   // val playlistDetail: String?,
-
-    ) {
+class Playlist private constructor(builder: Builder) {
+    val name: String
+    val avatar: String
+    val background: String
+    val songList: ArrayList<String>
+    // val playlistDetail: String?,
     val title: String
-        get() = "$name - $avatar - ${songList?.size}"
-    fun addSong(song: Song) { songList?.add(song) }
-//    fun addSong(song: Song) {
-//        songList?.add(song)
-//    }
-
-//    fun getName(): String? {
-//        return name
-//    }
-//
-//    fun getId(): String? {
-//        return id
-//    }
-//
-//    fun getAvatar(): String? {
-//        return avatar
-//    }
-//
-//    fun getSongList(): ArrayList<Song>? {
-//        return songList
-//    }
-//
-//    fun addPlaylist(playlistList: ArrayList<Playlist>) {
-//       // playlistList?.add(playList)
-//    }
-
-    data class Builder(
-        var id: String? = null,
-        var name: String? = null,
-        var avatar: String? = null,
-        var songList: ArrayList<Song>? = null,
+        get() = "$name - $avatar - ${songList.size}"
+    fun addSong(song: Song) { songList.add(song.id!!) }
+    class Builder(
+        var name: String,
+        var avatar: String,
+        var background: String,
+        var songList: ArrayList<String>
     ) {
-
-        fun id(id: String) = apply { this.id = id }
-        fun name(name: String) = apply { this.name = name }
-        fun avatar(avatar: String?) = apply { this.avatar = avatar }
-        fun songList(songList: ArrayList<Song>) = apply { this.songList = songList }
-        fun build() = Playlist(id, name, avatar, songList)
-
-
-
+        fun build(): Playlist {
+            return Playlist(this)
+        }
+    }
+    init {
+        name = builder.name
+        avatar = builder.avatar
+        background = builder.background
+        songList = builder.songList
     }
 }

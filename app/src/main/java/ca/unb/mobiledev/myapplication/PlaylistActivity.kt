@@ -32,6 +32,7 @@ class PlaylistActivity: AppCompatActivity() {
     lateinit var authorName_bb: TextView
     lateinit var songAvatar_bb: ImageView
     lateinit var mediaPlayer: MediaPlayer
+    lateinit var currentPlaylist: Playlist
 
     private var filePicker: ActivityResultLauncher<Intent>? = null
     private var currentModify = ""
@@ -42,16 +43,17 @@ class PlaylistActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.playlist)
-        Log.i("playlistActivity", " load songlist  " )
         var intent: Intent = getIntent()
-        var playlistId: String? = intent.getStringExtra("playlistId")
+        var playlistName: String? = intent.getStringExtra("playlistName")
 
         val utils = JsonUtils(this)
 
-        val songList: java.util.ArrayList<Song>? = utils.getPlaylist(this, playlistId)
+        val songList = utils.getSongList(playlistName)
 
-        //this line crashes the program not sure why
-     //songPlaying = songList?.get(0)
+        currentPlaylist = utils.getPlaylist(playlistName)
+
+        if (songList.size > 0)
+            songPlaying = songList.get(0)
 
 
 
@@ -89,6 +91,7 @@ class PlaylistActivity: AppCompatActivity() {
                 isPlaying = true
             }
         }
+
 
         playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
