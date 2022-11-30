@@ -1,9 +1,11 @@
 package ca.unb.mobiledev.myapplication
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.EditText
@@ -13,6 +15,8 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.nio.charset.Charset
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.appcompat.app.AlertDialog
 import java.io.File
 
 class AddSong : AppCompatActivity() {
@@ -25,67 +29,74 @@ class AddSong : AppCompatActivity() {
     lateinit var jsonClass: JsonUtils
     lateinit var songAdapterClass: PlaylistActivity.SongAdapter
 
+    lateinit var dialog: Dialog
+    lateinit var songNameEditText: EditText
+    lateinit var authorNameEditText: EditText
+    lateinit var submitButtonSong: Button
+    lateinit var cancelButtonSong: Button
+
+
+    private var newSongName = ""
+    private var newPlaylistAvatar = ""
+    private var newAuthorName = ""
+
+    private var utils: JsonUtils? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "test")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_songs)
+      setContentView(R.layout.playlist)
+        onCreateDialogaddSongs()
+//        val done = findViewById<Button>(R.id.playlistSubmitBtn3)
+//        done.setOnClickListener {
+//            Log.i("AddSong", "addSongButton Called")
+       jsonClass = JsonUtils(applicationContext)
+//            var songID = jsonClass.getSongSize()?.toInt()?.plus(1)
+//            Log.i("JsonUtils", "songId" + songID)
+//            var newSongs:Song = Song( songID.toString(),"sjdff" ,"mel ","@tools:sample/avatars",  "ABC","00:03:40" )
+
+//          jsonClass.addSongToJSONFile(newSongs, applicationContext)
+//            val intent = Intent(this@AddSong, MainActivity::class.java)
+//            startActivity(intent)
+
+     }
+
+        fun onCreateDialogaddSongs() {
+            val dialogBuilder = AlertDialog.Builder(this)
+            val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
 
 
-        val addSong = findViewById<Button>(R.id.songUploadBtn)
-        addSong.setOnClickListener {
-            Log.i("AddSong", "addSongButton Called")
 
+            songNameEditText= popupView.findViewById(R.id.playlistEditText3)
+            authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
+            submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
+            cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
+            // choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
 
-        }
+            cancelButtonSong.setOnClickListener { dialog.dismiss() }
 
+            submitButtonSong.setOnClickListener {
+                newSongName = songNameEditText.text.toString()
+                newAuthorName = authorNameEditText.text.toString()
 
-
-        val done = findViewById<Button>(R.id.submitBnt)
-        done.setOnClickListener {
-            Log.i("AddSong", "addSongButton Called")
-            jsonClass = JsonUtils(applicationContext)
-
-            var songID = jsonClass.getSongSize()?.toInt()?.plus(1)
-            Log.i("JsonUtils", "songId" + songID)
-            var newSongs:Song = Song(songID.toString(),"testing one two three" ,"tester","@tools:sample/avatars",  "ABC","00:03:40" )
-            //code does not like editText field above
-
-            if (!isExternalStorageAvailable() || isExternalStorageReadOnly() ) {
-                addSong.isEnabled = false
-                Log.i("JsonUtils", "nope")
-            } else {
-
-                Log.i("JsonUtils", "does it work")
+                val newSongs = Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newPlaylistAvatar,"ABC",  "00:03:40")
                 jsonClass.addSongToJSONFile(newSongs, applicationContext)
-
+                newPlaylistAvatar = ""
+                dialog.dismiss()
             }
 
+            dialogBuilder.setView(popupView)
+            dialog = dialogBuilder.create()
+            dialog.show()
 
-
-            val intent = Intent(this@AddSong, MainActivity::class.java)
-            startActivity(intent)
-
-
-
+//            val intent = Intent(this@AddSong, MainActivity::class.java)
+//           startActivity(intent)
 
         }
 
 
-    }
 
-  private fun isExternalStorageReadOnly(): Boolean {
-      val extStorageState = Environment.getExternalStorageState()
-      return if (Environment.MEDIA_MOUNTED_READ_ONLY == extStorageState) {
-          true
-      } else false
-  }
 
-    private fun isExternalStorageAvailable(): Boolean {
-        val extStorageState = Environment.getExternalStorageState()
-        return if (Environment.MEDIA_MOUNTED == extStorageState) {
-            true
-        } else false
-    }
 
     companion object {
         // String for LogCat documentation

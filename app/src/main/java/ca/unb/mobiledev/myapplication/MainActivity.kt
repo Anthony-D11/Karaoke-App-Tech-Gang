@@ -40,6 +40,12 @@ class MainActivity : AppCompatActivity() {
     lateinit var submitButton: Button
     lateinit var cancelButton: Button
     lateinit var choosePictureButton: Button
+    lateinit var textView: TextView
+    lateinit var jsonClass: JsonUtils
+    lateinit var songAdapterClass: PlaylistActivity.SongAdapter
+
+
+
 
     private var filePicker: ActivityResultLauncher<Intent>? = null
     private var newPlaylistName = ""
@@ -104,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         dialog = dialogBuilder.create()
         dialog.show()
     }
-
     private fun setupFilePicker() {
         filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result: ActivityResult ->
@@ -161,4 +166,6 @@ class MainActivity : AppCompatActivity() {
             return playlistList.size
         }
     }
+
+
 }

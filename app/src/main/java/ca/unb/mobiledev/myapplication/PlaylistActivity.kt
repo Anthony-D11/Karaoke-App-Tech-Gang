@@ -1,5 +1,6 @@
 package ca.unb.mobiledev.myapplication
 
+import android.app.Dialog
 import android.content.ContextWrapper
 import android.content.Intent
 import android.media.MediaPlayer
@@ -9,12 +10,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -39,6 +39,19 @@ class PlaylistActivity: AppCompatActivity() {
 
     private var isPlaying: Boolean = false
     private var songPlaying: Song? = null
+    lateinit var dialog: Dialog
+
+
+    lateinit var songNameEditText: EditText
+    lateinit var authorNameEditText: EditText
+    lateinit var submitButtonSong: Button
+    lateinit var cancelButtonSong: Button
+    lateinit var jsonClass: JsonUtils
+
+    private var newSongName = ""
+    private var newSongAvatar= ""
+    private var newAuthorName = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,8 +90,8 @@ class PlaylistActivity: AppCompatActivity() {
         }
 
        addSongsButton.setOnClickListener{
-                val intents = Intent(this, AddSong::class.java)
-                startActivity(intents)
+
+          onCreateDialogaddSongs()
         }
         playButton.setOnClickListener {
             if (isPlaying) {
@@ -190,6 +203,38 @@ class PlaylistActivity: AppCompatActivity() {
             return songList!!.size
         }
     }
+
+    fun onCreateDialogaddSongs() {
+        val dialogBuilders = AlertDialog.Builder(this)
+        val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
+        jsonClass = JsonUtils(applicationContext)
+
+
+        songNameEditText= popupView.findViewById(R.id.playlistEditText3)
+        authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
+        submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
+        cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
+
+        cancelButtonSong.setOnClickListener { dialog.dismiss() }
+
+        submitButtonSong.setOnClickListener {
+            newSongName = songNameEditText.text.toString()
+            newAuthorName = authorNameEditText.text.toString()
+
+            val newSongs = Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newSongAvatar,"ABC",  "00:03:40")
+            jsonClass.addSongToJSONFile(newSongs, applicationContext)
+            newSongAvatar = ""
+            dialog.dismiss()
+        }
+
+        dialogBuilders.setView(popupView)
+        dialog = dialogBuilders.create()
+        dialog.show()
+
+    }
+
+
+
     companion object {
         // String for LogCat documentation
         const val TAG = "Lab 2 - Activity One"

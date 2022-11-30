@@ -5,4 +5,6 @@
     <string name="song_name">Song Name</string>
     <string name="ok">OK</string>
     <string name="upload">Upload</string>
+    <string name="add_your_song">Add your song</string>
+    <string name="Song_name">Song Name</string>
 </resources>
