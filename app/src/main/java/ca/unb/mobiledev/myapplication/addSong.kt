@@ -15,12 +15,14 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.nio.charset.Charset
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import java.io.File
 
 class AddSong : AppCompatActivity() {
-
+    private var filePicker: ActivityResultLauncher<Intent>? = null
     lateinit var editText: EditText
     lateinit var nameOfSong: String
 
@@ -58,6 +60,7 @@ class AddSong : AppCompatActivity() {
 //          jsonClass.addSongToJSONFile(newSongs, applicationContext)
 //            val intent = Intent(this@AddSong, MainActivity::class.java)
 //            startActivity(intent)
+        setupFilePicker()
 
      }
 

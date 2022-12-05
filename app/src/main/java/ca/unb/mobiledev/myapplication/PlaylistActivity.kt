@@ -46,6 +46,7 @@ class PlaylistActivity: AppCompatActivity() {
     lateinit var authorNameEditText: EditText
     lateinit var submitButtonSong: Button
     lateinit var cancelButtonSong: Button
+    lateinit var uploadSongBtn: Button
     lateinit var jsonClass: JsonUtils
 
     private var newSongName = ""
@@ -146,6 +147,10 @@ class PlaylistActivity: AppCompatActivity() {
                 if (currentModify == "background") {
                     playlistBackground.setImageURI(uri)
                 }
+                if(currentModify == "song"){
+                    //set source of song to uri
+
+                }
             }
         }
     }
@@ -225,6 +230,14 @@ class PlaylistActivity: AppCompatActivity() {
             jsonClass.addSongToJSONFile(newSongs, applicationContext)
             newSongAvatar = ""
             dialog.dismiss()
+        }
+        uploadSongBtn = popupView.findViewById(R.id.AddSongBtn)
+        uploadSongBtn.setOnClickListener(){
+            currentModify == "song"
+            var intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.setType("audio/*")
+            intent = Intent.createChooser(intent, "Choose a song")
+            filePicker!!.launch(intent)
         }
 
         dialogBuilders.setView(popupView)
