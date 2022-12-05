@@ -46,48 +46,47 @@ class AddSong : AppCompatActivity() {
         Log.i(TAG, "test")
         super.onCreate(savedInstanceState)
       setContentView(R.layout.playlist)
-        onCreateDialogaddSongs()
-//        val done = findViewById<Button>(R.id.playlistSubmitBtn3)
+        //r val done = findViewById<Button>(R.id.playlistSubmitBtn3)
 //        done.setOnClickListener {
-//            Log.i("AddSong", "addSongButton Called")
-       jsonClass = JsonUtils(applicationContext)
-//            var songID = jsonClass.getSongSize()?.toInt()?.plus(1)
-//            Log.i("JsonUtils", "songId" + songID)
-//            var newSongs:Song = Song( songID.toString(),"sjdff" ,"mel ","@tools:sample/avatars",  "ABC","00:03:40" )
-
-//          jsonClass.addSongToJSONFile(newSongs, applicationContext)
-//            val intent = Intent(this@AddSong, MainActivity::class.java)
-//            startActivity(intent)
-
-     }
-
-        fun onCreateDialogaddSongs() {
-            val dialogBuilder = AlertDialog.Builder(this)
-            val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
-
-
-
-            songNameEditText= popupView.findViewById(R.id.playlistEditText3)
-            authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
-            submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
-            cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
-            // choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
-
-            cancelButtonSong.setOnClickListener { dialog.dismiss() }
-
-            submitButtonSong.setOnClickListener {
-                newSongName = songNameEditText.text.toString()
-                newAuthorName = authorNameEditText.text.toString()
-
-                val newSongs = Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newPlaylistAvatar,"ABC",  "00:03:40")
-                jsonClass.addSongToJSONFile(newSongs, applicationContext)
-                newPlaylistAvatar = ""
-                dialog.dismiss()
-            }
-
-            dialogBuilder.setView(popupView)
-            dialog = dialogBuilder.create()
-            dialog.show()
+////            Log.i("AddSong", "addSongButton Called")
+//       jsonClass = JsonUtils(applicationContext)
+////            var songID = jsonClass.getSongSize()?.toInt()?.plus(1)
+////            Log.i("JsonUtils", "songId" + songID)
+////            var newSongs:Song = Song( songID.toString(),"sjdff" ,"mel ","@tools:sample/avatars",  "ABC","00:03:40" )
+//
+////          jsonClass.addSongToJSONFile(newSongs, applicationContext)
+////            val intent = Intent(this@AddSong, MainActivity::class.java)
+////            startActivity(intent)
+//
+//     }
+//
+//        fun onCreateDialogaddSongs() {
+//            val dialogBuilder = AlertDialog.Builder(this)
+//            val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
+//
+//
+//
+//            songNameEditText= popupView.findViewById(R.id.playlistEditText3)
+//            authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
+//            submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
+//            cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
+//            // choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
+//
+//            cancelButtonSong.setOnClickListener { dialog.dismiss() }
+//
+//            submitButtonSong.setOnClickListener {
+//                newSongName = songNameEditText.text.toString()
+//                newAuthorName = authorNameEditText.text.toString()
+//
+//                val newSongs = Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newPlaylistAvatar,"ABC",  "00:03:40")
+//                jsonClass.addSongToJSONFile(newSongs, applicationContext)
+//                newPlaylistAvatar = ""
+//                dialog.dismiss()
+//            }
+//
+//            dialogBuilder.setView(popupView)
+//            dialog = dialogBuilder.create()
+//            dialog.show()
 
 //            val intent = Intent(this@AddSong, MainActivity::class.java)
 //           startActivity(intent)

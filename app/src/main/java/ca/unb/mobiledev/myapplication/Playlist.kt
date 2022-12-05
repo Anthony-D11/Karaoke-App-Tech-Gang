@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.myapplication
 
 class Playlist private constructor(builder: Builder) {
-    val name: String
+    var name: String
     val avatar: String
     val background: String
     val songList: ArrayList<String>

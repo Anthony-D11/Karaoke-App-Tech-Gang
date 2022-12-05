@@ -58,10 +58,11 @@ class PlaylistActivity: AppCompatActivity() {
         setContentView(R.layout.playlist)
         var intent: Intent = getIntent()
         var playlistName: String? = intent.getStringExtra("playlistName")
-
+        Log.i("JsonUtils", "Songlist help playlistname"  + playlistName)
         val utils = JsonUtils(this)
 
         val songList = utils.getSongList(playlistName)
+        Log.i("JsonUtils", "Songlist help"  + songList.toString())
 
         currentPlaylist = utils.getPlaylist(playlistName)
 
@@ -105,11 +106,13 @@ class PlaylistActivity: AppCompatActivity() {
             }
         }
 
-
         playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
+
         val recyclerView = findViewById<RecyclerView>(R.id.songList)
-        var adapter = songList?.let { SongAdapter(it, this, "playing") }
+       var adapter= SongAdapter(songList,this, "playing")
+
+
         recyclerView.adapter = adapter
         mediaPlayer = MediaPlayer()
         setupFilePicker()
@@ -168,6 +171,7 @@ class PlaylistActivity: AppCompatActivity() {
         return musicFile.path
     }
     class SongAdapter(private val songList: ArrayList<Song>?, private val parentActivity: AppCompatActivity, private val mode: String)
+
         :RecyclerView.Adapter<SongAdapter.ViewHolder>(){
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
             val songName_list: TextView
@@ -190,7 +194,6 @@ class PlaylistActivity: AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            Log.i("playlistActivity", " load songlist working? " )
             holder.songName_list.text = songList?.get(position)!!.name
             holder.authorName_list.text = songList?.get(position).authorName
             holder.songDuration_list.text = songList?.get(position).duration
@@ -204,7 +207,10 @@ class PlaylistActivity: AppCompatActivity() {
         }
     }
 
-    fun onCreateDialogaddSongs() {
+    private fun onCreateDialogaddSongs() {
+        var intent: Intent = getIntent()
+        var playlistName: String? = intent.getStringExtra("playlistName")
+
         val dialogBuilders = AlertDialog.Builder(this)
         val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
         jsonClass = JsonUtils(applicationContext)
@@ -221,8 +227,26 @@ class PlaylistActivity: AppCompatActivity() {
             newSongName = songNameEditText.text.toString()
             newAuthorName = authorNameEditText.text.toString()
 
-            val newSongs = Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newSongAvatar,"ABC",  "00:03:40")
-            jsonClass.addSongToJSONFile(newSongs, applicationContext)
+
+            val newSongs = playlistName?.let { it1 ->
+                Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newSongAvatar,"ABC",  "00:03:40",
+                    it1
+                )
+            }
+
+            if (playlistName != null) {
+                if (newSongs != null) {
+                    newSongs.id?.let { it1 ->
+                        if (newSongs != null) {
+                            jsonClass.addsongToPlaylist(playlistName, it1, newSongs, applicationContext )
+                        }
+                    }
+                }
+            }
+
+
+          //jsonClass.addSongToJSONFile(newSongs, applicationContext)
+
             newSongAvatar = ""
             dialog.dismiss()
         }
