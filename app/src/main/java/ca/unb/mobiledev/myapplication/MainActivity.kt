@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            Log.i("JsonUtils",  "onbint "  )
             holder.playlistName.text = playlistList[position].name
             holder.songNumbers.text = playlistList[position].songList.size.toString()
             if (playlistList[position].avatar != "")
