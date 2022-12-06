@@ -46,7 +46,7 @@ class AddSong : AppCompatActivity() {
         Log.i(TAG, "test")
         super.onCreate(savedInstanceState)
       setContentView(R.layout.playlist)
-        //r val done = findViewById<Button>(R.id.playlistSubmitBtn3)
+        //r val done = findViewById<Button>(R.id.addSongSubmitBtn)
 //        done.setOnClickListener {
 ////            Log.i("AddSong", "addSongButton Called")
 //       jsonClass = JsonUtils(applicationContext)
@@ -66,9 +66,9 @@ class AddSong : AppCompatActivity() {
 //
 //
 //
-//            songNameEditText= popupView.findViewById(R.id.playlistEditText3)
-//            authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
-//            submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
+//            songNameEditText= popupView.findViewById(R.id.addSongNameEditText)
+//            authorNameEditText= popupView.findViewById(R.id.addSongAuthorEditText)
+//            submitButtonSong = popupView.findViewById(R.id.addSongSubmitBtn)
 //            cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
 //            // choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
 //

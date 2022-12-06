@@ -8,7 +8,13 @@ class Playlist private constructor(builder: Builder) {
     // val playlistDetail: String?,
     val title: String
         get() = "$name - $avatar - ${songList.size}"
-    fun addSong(song: Song) { songList.add(song.id!!) }
+    fun addSong(song: Song): Boolean {
+        for (songName in songList) {
+            if (song.realName == songName) return false
+        }
+        songList.add(song.realName)
+        return true
+    }
     class Builder(
         var name: String,
         var avatar: String,

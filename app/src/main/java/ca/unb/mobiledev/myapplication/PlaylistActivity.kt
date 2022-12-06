@@ -1,44 +1,39 @@
 package ca.unb.mobiledev.myapplication
 
 import android.app.Dialog
-import android.content.ContextWrapper
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Environment
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.io.File
+
 
 class PlaylistActivity: AppCompatActivity() {
     lateinit var addSongsButton: FloatingActionButton
     lateinit var playButton: FloatingActionButton
-    lateinit var nextButton: FloatingActionButton
-    lateinit var avatar_edit_button: ImageButton
-    lateinit var background_edit_button: ImageButton
     lateinit var playlistAvatar: ImageView
     lateinit var playlistBackground: ImageView
     lateinit var songName_bb: TextView
     lateinit var authorName_bb: TextView
     lateinit var songAvatar_bb: ImageView
-    lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
+    lateinit var utils: JsonUtils
+    lateinit var playlistName: String
     lateinit var currentPlaylist: Playlist
-
-    private var filePicker: ActivityResultLauncher<Intent>? = null
-    private var currentModify = ""
+    lateinit var recyclerView: RecyclerView
+    lateinit var bottomBar: LinearLayout
 
     private var isPlaying: Boolean = false
-    private var songPlaying: Song? = null
+    private var songPlaying: String = ""
     lateinit var dialog: Dialog
 
 
@@ -46,160 +41,143 @@ class PlaylistActivity: AppCompatActivity() {
     lateinit var authorNameEditText: EditText
     lateinit var submitButtonSong: Button
     lateinit var cancelButtonSong: Button
-    lateinit var jsonClass: JsonUtils
 
     private var newSongName = ""
     private var newSongAvatar= ""
     private var newAuthorName = ""
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.playlist)
-        var intent: Intent = getIntent()
-        var playlistName: String? = intent.getStringExtra("playlistName")
-        Log.i("JsonUtils", "Songlist help playlistname"  + playlistName)
-        val utils = JsonUtils(this)
+        val intent: Intent = getIntent()
+        playlistName= intent.getStringExtra("playlistName").toString()
+        utils = JsonUtils(this)
 
         val songList = utils.getSongList(playlistName)
-        Log.i("JsonUtils", "Songlist help"  + songList.toString())
 
-        currentPlaylist = utils.getPlaylist(playlistName)
-
-        if (songList.size > 0)
-            songPlaying = songList.get(0)
-
+        currentPlaylist = utils.getPlaylist(playlistName)!!
 
 
         addSongsButton = findViewById(R.id.addSongsButton)
         playButton = findViewById(R.id.playButton)
-        nextButton = findViewById(R.id.nextButton)
         playlistAvatar = findViewById(R.id.playlistAvatar)
         playlistBackground = findViewById(R.id.playlistBackground)
         songName_bb = findViewById(R.id.songName_bb)
         authorName_bb = findViewById(R.id.authorName_bb)
         songAvatar_bb = findViewById(R.id.songAvatar_bb)
-        avatar_edit_button = findViewById(R.id.avatar_edit_button)
-        background_edit_button = findViewById(R.id.background_edit_button)
+        val playlistTitle = findViewById<TextView>(R.id.playlistNameTitle)
+        playlistTitle.text = playlistName
 
+        bottomBar = findViewById(R.id.bottomBar)
 
-        avatar_edit_button.setOnClickListener {
-            editAvatar()
-        }
-        background_edit_button.setOnClickListener {
-            editBackground()
-        }
-
-       addSongsButton.setOnClickListener{
-
-          onCreateDialogaddSongs()
+        addSongsButton.setOnClickListener{
+          onCreateDialogAddSongs()
         }
         playButton.setOnClickListener {
-            if (isPlaying) {
+            if (mediaPlayer!!.isPlaying) {
                 playButton.setImageResource(R.drawable.play_button)
-                mediaPlayer.pause()
-                isPlaying = false
+                mediaPlayer!!.pause()
             }
             else {
-                playSong(songPlaying!!,"General", "ABC.mp3")
-                isPlaying = true
+                mediaPlayer!!.start()
+                playButton.setImageResource(R.drawable.stop_button)
+
+                val handler = Handler()
+                handler.postDelayed(object : Runnable {
+                    override fun run() {
+                        playButton.setImageResource(R.drawable.play_button)
+                    }
+                }, mediaPlayer!!.duration.toLong())
             }
         }
 
-        playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
+        playlistAvatar.setBackgroundResource(R.drawable.default_playlist_avatar)
         playlistBackground.setBackgroundResource(R.drawable.default_playlist_background)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.songList)
-       var adapter= SongAdapter(songList,this, "playing")
+        recyclerView = findViewById<RecyclerView>(R.id.songList)
+        val adapter= SongAdapter(songList,this, "playing")
 
 
         recyclerView.adapter = adapter
-        mediaPlayer = MediaPlayer()
-        setupFilePicker()
 
     }
 
-    private fun editAvatar() {
-        currentModify = "avatar"
-        openFilePicker()
-    }
-
-    private fun editBackground() {
-        currentModify = "background"
-        openFilePicker()
-    }
-
-    private fun openFilePicker() {
-        var intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.setType("image/*")
-        intent = Intent.createChooser(intent, "Choose a image file")
-        filePicker!!.launch(intent)
-        //write uri to Data.json. Create a JSON object and add it to Data.json file using
-
-    }
-    private fun setupFilePicker() {
-        filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-            if (result.resultCode == RESULT_OK) {
-                val data = result.data
-                val uri = data!!.data
-                if (currentModify == "avatar") {
-                    playlistAvatar.setImageURI(uri)
-                }
-                if (currentModify == "background") {
-                    playlistBackground.setImageURI(uri)
-                }
-            }
-        }
-    }
-
-    fun playSong(song: Song, dirSource: String, fileName: String) {
-        isPlaying = true
-        songAvatar_bb.setBackgroundResource(R.drawable.ic_launcher_background)
-        songName_bb.text = song.name
+    private fun changeUI(song: Song) {
+        songAvatar_bb.setBackgroundResource(R.drawable.default_song_cover)
+        songName_bb.text = song.nickName
         authorName_bb.text = song.authorName
         playButton.setImageResource(R.drawable.stop_button)
-        mediaPlayer.setDataSource(getMusicPath(dirSource, fileName))
-        mediaPlayer.prepare()
-        mediaPlayer.start()
     }
 
-    private fun getMusicPath(dirSource: String, fileName: String): String {
-        val contextWrapper = ContextWrapper(applicationContext)
-        val music = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC + "/$dirSource")
-        val musicFile = File(music, fileName)
-        return musicFile.path
+    fun playSong(song: Song, changeUI: Boolean) {
+        if (mediaPlayer != null) {
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            mediaPlayer = null
+        }
+        mediaPlayer = MediaPlayer()
+        mediaPlayer!!.setDataSource(song.source)
+        mediaPlayer!!.prepare()
+        mediaPlayer!!.start()
+        if (changeUI) changeUI(song)
+        val handler = Handler()
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                playButton.setImageResource(R.drawable.play_button)
+            }
+        }, mediaPlayer!!.duration.toLong())
+
     }
+
     class SongAdapter(private val songList: ArrayList<Song>?, private val parentActivity: AppCompatActivity, private val mode: String)
 
         :RecyclerView.Adapter<SongAdapter.ViewHolder>(){
-        class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        class ViewHolder(view: View, mode: String): RecyclerView.ViewHolder(view) {
             val songName_list: TextView
             val authorName_list: TextView
             val songDuration_list: TextView
-            val songAvatar_list: ImageView
+            var songAvatar_list: ImageView? = null
             init {
                 songName_list = view.findViewById(R.id.songName_list)
                 authorName_list = view.findViewById(R.id.authorName_list)
                 songDuration_list = view.findViewById(R.id.songDuration_list)
+                if (mode == "playing")
                 songAvatar_list = view.findViewById(R.id.songAvatar_list)
             }
 
         }
-
+        private var previousChoose: ViewHolder? = null
+        var choosedSong: Song? = null
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context)
+            var view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.song_item, parent, false)
-            return ViewHolder(view)
+            if (mode == "choosing")
+            view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.song_choose, parent, false)
+            return ViewHolder(view, mode)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.songName_list.text = songList?.get(position)!!.name
+            Log.i("JsonUtils",  "onbint "  )
+            holder.songName_list.text = songList?.get(position)!!.nickName
+            if (songList?.get(position)!!.nickName == "") holder.songName_list.text = songList?.get(position)!!.realName
             holder.authorName_list.text = songList?.get(position).authorName
-            holder.songDuration_list.text = songList?.get(position).duration
-            holder.songAvatar_list.setBackgroundResource(R.drawable.ic_launcher_background)
+            if (songList.get(position).authorName == "" && mode == "playing") holder.authorName_list.text = "Unknown author"
+            if (mode == "playing") holder.songAvatar_list!!.setBackgroundResource(R.drawable.default_song_cover)
+
             holder.itemView.setOnClickListener {
-                (parentActivity as PlaylistActivity).playSong(songList[position],"General", "ABC.mp3")
+                if (mode == "playing") {
+                    (parentActivity as PlaylistActivity).bottomBar.visibility = View.VISIBLE
+                    (parentActivity as PlaylistActivity).playSong(songList[position], true)
+                }
+                else {
+                    if (previousChoose != null) previousChoose!!.songDuration_list.text = ""
+                    holder.songDuration_list.text = "Choosed"
+                    previousChoose = holder
+                    choosedSong = songList[position]
+                }
             }
         }
         override fun getItemCount(): Int {
@@ -207,48 +185,40 @@ class PlaylistActivity: AppCompatActivity() {
         }
     }
 
-    private fun onCreateDialogaddSongs() {
-        var intent: Intent = getIntent()
-        var playlistName: String? = intent.getStringExtra("playlistName")
 
+
+    private fun onCreateDialogAddSongs() {
         val dialogBuilders = AlertDialog.Builder(this)
         val popupView: View = layoutInflater.inflate(R.layout.add_songs, null)
-        jsonClass = JsonUtils(applicationContext)
 
-
-        songNameEditText= popupView.findViewById(R.id.playlistEditText3)
-        authorNameEditText= popupView.findViewById(R.id.songAuthorTxt)
-        submitButtonSong = popupView.findViewById(R.id.playlistSubmitBtn3)
-        cancelButtonSong = popupView.findViewById(R.id.playlistCancelBtn3)
-
+        val allSongs = utils.getAllSongs()
+        songNameEditText= popupView.findViewById(R.id.addSongNameEditText)
+        authorNameEditText= popupView.findViewById(R.id.addSongAuthorEditText)
+        submitButtonSong = popupView.findViewById(R.id.addSongSubmitBtn)
+        cancelButtonSong = popupView.findViewById(R.id.addSongCancelBtn)
+        val recycler = popupView.findViewById<RecyclerView>(R.id.chooseSongRecyclerView)
+        val customAdapter = SongAdapter(allSongs, this, "choosing")
+        val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(applicationContext)
+        recycler.setLayoutManager(mLayoutManager)
+        recycler.adapter = customAdapter
         cancelButtonSong.setOnClickListener { dialog.dismiss() }
 
         submitButtonSong.setOnClickListener {
-            newSongName = songNameEditText.text.toString()
-            newAuthorName = authorNameEditText.text.toString()
+            if (songNameEditText.text.toString() == "" || authorNameEditText.text.toString() == "" || customAdapter.choosedSong == null)
+                Toast.makeText(applicationContext, "Unsuccessful, please enter both text field!", Toast.LENGTH_SHORT).show()
+            else {
+                val song = Song.Builder(customAdapter.choosedSong!!.realName, songNameEditText.text.toString(), authorNameEditText.text.toString(), "", "", customAdapter.choosedSong!!.source).build()
+                utils.addSongToPlaylistObject(song, playlistName)
+                utils.addSongToPlaylistJson(song, playlistName)
+                utils.addNickNameForSongJson(customAdapter.choosedSong!!.realName, songNameEditText.text.toString())
+                utils.addNickNameForSongListObject(customAdapter.choosedSong!!.realName, songNameEditText.text.toString())
+                utils.addAuthorForSongJson(customAdapter.choosedSong!!.realName, authorNameEditText.text.toString())
+                utils.addAuthorForSongListObject(customAdapter.choosedSong!!.realName, authorNameEditText.text.toString())
 
-
-            val newSongs = playlistName?.let { it1 ->
-                Song(jsonClass.getSongSize().toString(),newSongName, newAuthorName, newSongAvatar,"ABC",  "00:03:40",
-                    it1
-                )
+                val a = SongAdapter(utils.getSongList(playlistName), this, "playing")
+                recyclerView.adapter = a
+                dialog.dismiss()
             }
-
-            if (playlistName != null) {
-                if (newSongs != null) {
-                    newSongs.id?.let { it1 ->
-                        if (newSongs != null) {
-                            jsonClass.addsongToPlaylist(playlistName, it1, newSongs, applicationContext )
-                        }
-                    }
-                }
-            }
-
-
-          //jsonClass.addSongToJSONFile(newSongs, applicationContext)
-
-            newSongAvatar = ""
-            dialog.dismiss()
         }
 
         dialogBuilders.setView(popupView)
