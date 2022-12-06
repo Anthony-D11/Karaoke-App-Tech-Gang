@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".PlaylistActivity">
 
     <LinearLayout
@@ -13,30 +14,31 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="250dp">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/playlistBackground"
                 android:layout_width="fill_parent"
-                android:layout_height="145dp"
+                android:layout_height="100dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints"
                 tools:layout_editor_absoluteX="0dp"
-                tools:srcCompat="@tools:sample/backgrounds/scenic"
-                tools:ignore="MissingConstraints" />
+                tools:srcCompat="@drawable/default_playlist_background" />
 
             <ImageView
                 android:id="@+id/playlistAvatar"
                 android:layout_width="110dp"
                 android:layout_height="110dp"
+                android:layout_marginTop="50dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:layout_constraintTop_toTopOf="@+id/playlistBackground"
+                tools:srcCompat="@drawable/default_playlist_avatar" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/playlistNameTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
@@ -45,66 +47,29 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:autoSizeTextType="none"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageButton
-                android:id="@+id/avatar_edit_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/white"
-                android:scaleType="centerInside"
-                app:layout_constraintBottom_toBottomOf="@+id/playlistAvatar"
-                app:layout_constraintEnd_toEndOf="@+id/playlistAvatar"
-                app:srcCompat="@drawable/edit_button" />
-
-            <ImageButton
-                android:id="@+id/background_edit_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@color/white"
-                android:scaleType="centerInside"
-                app:layout_constraintEnd_toEndOf="@+id/playlistBackground"
-                app:layout_constraintTop_toTopOf="@+id/playlistBackground"
-                app:srcCompat="@drawable/edit_button" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:paddingLeft="10dp"
-                android:text="Songs"
-                android:textSize="20sp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/playlistAvatar" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addSongsButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:clickable="true"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 app:backgroundTint="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/playlistNameTitle"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/add_icon" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/songList"
             android:layout_width="match_parent"
-            android:layout_height="364dp"
+            android:layout_height="250dp"
             app:layoutManager="LinearLayoutManager" />
         <!--
         <ListView
@@ -119,17 +84,22 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#83BEF3"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
             android:id="@+id/songAvatar_bb"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_weight="0.25"
-            android:scaleType="fitStart"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="fitCenter"
             tools:srcCompat="@tools:sample/avatars" />
 
         <LinearLayout
@@ -143,15 +113,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"
-                android:text="TextView" />
+                android:layout_marginBottom="5dp" />
 
             <TextView
                 android:id="@+id/authorName_bb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="TextView" />
+                android:layout_marginLeft="5dp" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -159,19 +127,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="1"
             android:clickable="true"
             app:backgroundTint="#FFFFFF"
             app:srcCompat="@android:drawable/ic_media_play" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/nextButton"
-            android:layout_width="94dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            app:backgroundTint="#FFFFFF"
-            app:srcCompat="@android:drawable/ic_media_next" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

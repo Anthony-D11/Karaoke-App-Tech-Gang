@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
         utils = JsonUtils(applicationContext)
 
-
         val playlistList = utils!!.getPlaylistList()
         val recyclerView = findViewById<RecyclerView>(R.id.playlistList)
         val adapter = PlaylistAdapter(playlistList, this)
@@ -77,39 +76,35 @@ class MainActivity : AppCompatActivity() {
         addPlayListButton.setOnClickListener {
             onCreateDialog()
         }
-        setupFilePicker()
+        //setupFilePicker()
     }
     private fun onCreateDialog() {
         val dialogBuilder = AlertDialog.Builder(this)
         val popupView: View = layoutInflater.inflate(R.layout.add_playlist, null)
-
-
-
         playlistNameEditText = popupView.findViewById(R.id.playlistEditText)
         submitButton = popupView.findViewById(R.id.playlistSubmitBtn)
         cancelButton = popupView.findViewById(R.id.playlistCancelBtn)
         choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
-
-
-
         cancelButton.setOnClickListener { dialog.dismiss() }
 
         submitButton.setOnClickListener {
             newPlaylistName = playlistNameEditText.text.toString()
-            val newPlaylist = Playlist.Builder(newPlaylistName, newPlaylistAvatar, "", ArrayList<String>()).build()
+            val newPlaylist = Playlist.Builder(newPlaylistName, "", "", ArrayList<String>()).build()
             utils!!.addPlaylistToJSONFile(newPlaylist, applicationContext)
-            newPlaylistAvatar = ""
+            utils!!.addPlaylistToPlaylistListObject(newPlaylist)
             dialog.dismiss()
         }
 
         choosePictureButton.setOnClickListener {
-            choosePhoto()
+            //choosePhoto()
         }
 
         dialogBuilder.setView(popupView)
         dialog = dialogBuilder.create()
         dialog.show()
     }
+
+
     private fun setupFilePicker() {
         filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
                 result: ActivityResult ->
@@ -154,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             holder.songNumbers.text = playlistList[position].songList.size.toString()
             if (playlistList[position].avatar != "")
                 holder.playlistAvatar.setImageURI(playlistList[position].avatar.toUri())
-            else holder.playlistAvatar.setBackgroundResource(R.drawable.ic_launcher_background)
+            else holder.playlistAvatar.setBackgroundResource(R.drawable.default_song_cover)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {
                     putExtra("playlistName", playlistList[position].name)
