@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var playlistNameEditText: EditText
     lateinit var submitButton: Button
     lateinit var cancelButton: Button
-    lateinit var choosePictureButton: Button
     lateinit var textView: TextView
     lateinit var jsonClass: JsonUtils
     lateinit var songAdapterClass: PlaylistActivity.SongAdapter
@@ -84,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         playlistNameEditText = popupView.findViewById(R.id.playlistEditText)
         submitButton = popupView.findViewById(R.id.playlistSubmitBtn)
         cancelButton = popupView.findViewById(R.id.playlistCancelBtn)
-        choosePictureButton = popupView.findViewById(R.id.playlistUploadBtn)
         cancelButton.setOnClickListener { dialog.dismiss() }
 
         submitButton.setOnClickListener {
@@ -95,35 +93,11 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        choosePictureButton.setOnClickListener {
-            //choosePhoto()
-        }
 
         dialogBuilder.setView(popupView)
         dialog = dialogBuilder.create()
         dialog.show()
     }
-
-
-    private fun setupFilePicker() {
-        filePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                result: ActivityResult ->
-            if (result.resultCode == RESULT_OK) {
-                val data = result.data
-                val uri = data!!.data
-                newPlaylistAvatar = uri.toString()
-                choosePictureButton.text = newPlaylistAvatar.substring(newPlaylistAvatar.lastIndexOf('/'))
-            }
-        }
-    }
-
-    private fun choosePhoto() {
-        var intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.setType("image/*")
-        intent = Intent.createChooser(intent, "Choose a photo")
-        filePicker!!.launch(intent)
-    }
-
     class PlaylistAdapter(private val playlistList: ArrayList<Playlist>, private val parentActivity: Activity)
         :RecyclerView.Adapter<PlaylistAdapter.ViewHolder>(){
         class ViewHolder: RecyclerView.ViewHolder {
