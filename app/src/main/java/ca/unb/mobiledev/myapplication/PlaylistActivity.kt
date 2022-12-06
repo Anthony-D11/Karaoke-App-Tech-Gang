@@ -104,6 +104,15 @@ class PlaylistActivity: AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mediaPlayer != null) {
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            mediaPlayer = null
+        }
+    }
+
     private fun changeUI(song: Song) {
         songAvatar_bb.setBackgroundResource(R.drawable.default_song_cover)
         songName_bb.text = song.nickName

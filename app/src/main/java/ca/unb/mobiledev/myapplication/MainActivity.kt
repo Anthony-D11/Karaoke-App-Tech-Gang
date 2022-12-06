@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
 
 
 
-
     private var filePicker: ActivityResultLauncher<Intent>? = null
     private var newPlaylistName = ""
     private var newPlaylistAvatar = ""

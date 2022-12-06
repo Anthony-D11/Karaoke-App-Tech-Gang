@@ -114,6 +114,20 @@ class RecordActivity: AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (mediaRecorder != null) {
+            mediaRecorder!!.stop()
+            mediaRecorder!!.release()
+            mediaRecorder = null
+        }
+        if (mediaPlayer != null) {
+            mediaPlayer!!.stop()
+            mediaPlayer!!.release()
+            mediaPlayer = null
+        }
+    }
+
     private fun createRecordingPlaylist() {
         val playlist = Playlist.Builder("Recording", "", "", ArrayList()).build()
         utils.addPlaylistToPlaylistListObject(playlist)
