@@ -38,24 +38,26 @@ class RecordActivity: AppCompatActivity() {
     lateinit var dialog: Dialog
     lateinit var dirSource: String
     lateinit var fileName: String
-
+    lateinit var utils: JsonUtils
     private var maximumSeconds: Long = 10000
     private var intervalSeconds: Long = 1
 
     private var isRecording = false
     private var mediaRecorder: MediaRecorder? = null
     private var handler: Handler = Handler()
-    private var mediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer? = null
     private var songPlaying: String = ""
     private var filePicker: ActivityResultLauncher<Intent>? = null
 
+    private var fileChoosing = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.record);
 
         val extras = intent
-
+        utils = JsonUtils(applicationContext)
+        createRecordingPlaylist()
         if (extras.getStringExtra("songName") != null) {
             songPlaying = extras.getStringExtra("songName").toString()
         }
@@ -97,9 +99,11 @@ class RecordActivity: AppCompatActivity() {
             }
         }
         chooseSongButton.setOnClickListener {
+            fileChoosing = "song"
             chooseSong()
         }
         chooseLyricsButton.setOnClickListener {
+            fileChoosing = "lyrics"
             chooseLyrics()
         }
         if (songPlaying != "") {
@@ -109,6 +113,13 @@ class RecordActivity: AppCompatActivity() {
         setupFilePicker()
 
     }
+
+    private fun createRecordingPlaylist() {
+        val playlist = Playlist.Builder("Recording", "", "", ArrayList()).build()
+        utils.addPlaylistToPlaylistListObject(playlist)
+        utils.addPlaylistToJSONFile(playlist, applicationContext)
+    }
+
     private fun startRecording() {
         isRecording = true
         timer.start()
@@ -161,14 +172,33 @@ class RecordActivity: AppCompatActivity() {
     }
 
     private fun startPlayingSong() {
-        mediaPlayer.start()
+        Executors.newSingleThreadExecutor().execute(object: Runnable {
+            override fun run() {
+                mediaPlayer!!.start()
+            }
+
+        })
     }
     private fun stopPlayingSong() {
-        mediaPlayer.stop()
+        Executors.newSingleThreadExecutor().execute(object: Runnable{
+            override fun run() {
+                mediaPlayer!!.stop()
+                mediaPlayer!!.release()
+                mediaPlayer = null
+
+                runOnUiThread(object: Runnable{
+                    override fun run() {
+                        handler.removeCallbacksAndMessages(null)
+                    }
+                })
+            }
+        })
     }
+
     private fun prepareSong(path: String) {
-        mediaPlayer.setDataSource(path)
-        mediaPlayer.prepare()
+        if (mediaPlayer == null) mediaPlayer = MediaPlayer()
+        mediaPlayer!!.setDataSource(path)
+        mediaPlayer!!.prepare()
     }
     private fun getMusicPath(dirSource: String, fileName: String): String {
         val contextWrapper = ContextWrapper(applicationContext)
@@ -226,19 +256,17 @@ class RecordActivity: AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
                 val data = result.data
                 val add = data!!.data
-                if (add.toString().takeLast(3) == "mp3") {
-                    mediaPlayer.setDataSource(this, data!!.data!!)
-                    mediaPlayer.prepare()
+                if (fileChoosing == "song") {
+                    if (mediaPlayer == null) mediaPlayer = MediaPlayer()
+                    mediaPlayer!!.setDataSource(this, data!!.data!!)
+                    mediaPlayer!!.prepare()
                     songPlaying = add.toString()
-                    chooseSongButton.text = add!!.path!!.substring(add!!.path!!.lastIndexOf('/') + 1)
-
+                    chooseSongButton.text = "Choosed"
                 }
-                else if (add.toString().takeLast(3) == "txt") {
+                else if (fileChoosing == "lyrics") {
                     lyricsView.text = getStringFromUri(add!!)
-                    chooseLyricsButton.text = add!!.path!!.substring(add!!.path!!.lastIndexOf('/') + 1)
+                    chooseLyricsButton.text = "Choosed"
                 }
-
-
             }
         }
     }
@@ -261,15 +289,43 @@ class RecordActivity: AppCompatActivity() {
         val cancelButton: Button = popupView.findViewById(R.id.cancelButton)
 
         cancelButton.setOnClickListener {
+            if (playing) {
+                stopPlayingSong()
+                playing = false
+            }
             val file = File(getRecordingPath("Test"))
             file.delete()
             dialog.dismiss()
         }
         submitButton.setOnClickListener {
             val file = File(getRecordingPath("Test"))
-            file.renameTo(File(getRecordingPath(songNameEditText.text.toString())))
-            Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
+            if (songNameEditText.text.toString() != "") {
+                file.renameTo(File(getRecordingPath(songNameEditText.text.toString())))
+                val song = Song.Builder(
+                    songNameEditText.text.toString(),
+                    songNameEditText.text.toString(),
+                    "",
+                    "",
+                    "",
+                    getRecordingPath(songNameEditText.text.toString())
+                ).build()
+                Log.i("Record", song.realName + song.source)
+                if (utils.addSongToJSONFile(song, applicationContext) &&
+                    utils.addSongToPlaylistJson(song, PLAYLISTNAME)
+                ) {
+                    Toast.makeText(this, "Recording is saved", Toast.LENGTH_SHORT).show()
+                    file.delete()
+                    if (playing) {
+                        stopPlayingSong()
+                        playing = false
+                    }
+                    dialog.dismiss()
+                } else {
+                    Toast.makeText(this, "Song's name is duplicated", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else Toast.makeText(this, "Song's name can't be blank", Toast.LENGTH_SHORT).show()
+
         }
         playMusicButton.setOnClickListener {
             if (!playing) {
@@ -279,6 +335,7 @@ class RecordActivity: AppCompatActivity() {
             }
             else {
                 stopPlayingSong()
+                playing = false
             }
 
         }
@@ -322,6 +379,7 @@ class RecordActivity: AppCompatActivity() {
     companion object {
         // String for LogCat documentation
         private const val TAG = "testing buttons"
+        private const val PLAYLISTNAME = "Recording"
     }
 
 }
