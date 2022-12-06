@@ -220,14 +220,6 @@ class PlaylistActivity: AppCompatActivity() {
                 dialog.dismiss()
             }
         }
-        uploadSongBtn = popupView.findViewById(R.id.AddSongBtn)
-        uploadSongBtn.setOnClickListener(){
-            currentModify == "song"
-            var intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.setType("audio/*")
-            intent = Intent.createChooser(intent, "Choose a song")
-            filePicker!!.launch(intent)
-        }
 
         dialogBuilders.setView(popupView)
         dialog = dialogBuilders.create()
