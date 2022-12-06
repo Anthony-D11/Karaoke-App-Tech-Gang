@@ -111,7 +111,7 @@ class JsonUtils(context: Context) {
                 }
                 else if (filterMp3(file)) {
                     val song = Song.Builder(file.name, "", "", "", "", file.absolutePath).build()
-                    Log.i("Hello", file.name)
+
                     res.add(song)
                 }
             }

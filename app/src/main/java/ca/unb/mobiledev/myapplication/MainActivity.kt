@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var textView: TextView
     lateinit var jsonClass: JsonUtils
     lateinit var songAdapterClass: PlaylistActivity.SongAdapter
-
+    lateinit var recyclerView: RecyclerView
 
 
     private var filePicker: ActivityResultLauncher<Intent>? = null
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         utils = JsonUtils(applicationContext)
 
         val playlistList = utils!!.getPlaylistList()
-        val recyclerView = findViewById<RecyclerView>(R.id.playlistList)
+        recyclerView = findViewById(R.id.playlistList)
         val adapter = PlaylistAdapter(playlistList, this)
         microphoneButton = findViewById(R.id.microphoneButton)
         recyclerView.adapter = adapter
@@ -85,11 +85,16 @@ class MainActivity : AppCompatActivity() {
         cancelButton.setOnClickListener { dialog.dismiss() }
 
         submitButton.setOnClickListener {
-            newPlaylistName = playlistNameEditText.text.toString()
-            val newPlaylist = Playlist.Builder(newPlaylistName, "", "", ArrayList<String>()).build()
-            utils!!.addPlaylistToJSONFile(newPlaylist, applicationContext)
-            utils!!.addPlaylistToPlaylistListObject(newPlaylist)
-            dialog.dismiss()
+            if (playlistNameEditText.text.toString() == "") Toast.makeText(applicationContext, "Please enter the playlist name", Toast.LENGTH_SHORT).show()
+            else {
+                newPlaylistName = playlistNameEditText.text.toString()
+                val newPlaylist =
+                    Playlist.Builder(newPlaylistName, "", "", ArrayList<String>()).build()
+                utils!!.addPlaylistToJSONFile(newPlaylist, applicationContext)
+                utils!!.addPlaylistToPlaylistListObject(newPlaylist)
+                recyclerView.adapter = PlaylistAdapter(utils!!.getPlaylistList(), this)
+                dialog.dismiss()
+            }
         }
 
 
