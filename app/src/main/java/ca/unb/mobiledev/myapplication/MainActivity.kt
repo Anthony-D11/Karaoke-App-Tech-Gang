@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             holder.songNumbers.text = playlistList[position].songList.size.toString()
             if (playlistList[position].avatar != "")
                 holder.playlistAvatar.setImageURI(playlistList[position].avatar.toUri())
-            else holder.playlistAvatar.setBackgroundResource(R.drawable.default_song_cover)
+            else holder.playlistAvatar.setBackgroundResource(R.drawable.default_playlist_avatar)
             holder.itemView.setOnClickListener {
                 val intent = Intent(parentActivity, PlaylistActivity::class.java).apply {
                     putExtra("playlistName", playlistList[position].name)
